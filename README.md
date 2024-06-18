@@ -1,6 +1,6 @@
 # 📸 Stable Diffusion Helper 🎨
 
-Welcome to the Image Face Cropper project! This tool is designed to streamline the process of cropping faces from images, ensuring that you get the perfect crop every time. Whether you're working on a photo management application or simply need to process a batch of images for your next project, our tool is here to help.
+This tool is designed to streamline the process of cropping faces from images, ensuring that you get the perfect crop every time. Whether you're working on a photo management application or simply need to process a batch of images for your next project, our tool is here to help.
 
 ## Features
 
