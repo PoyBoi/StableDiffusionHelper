@@ -35,6 +35,11 @@ Before you begin, ensure you have the following installed:
 
 ### Usage
 
+- Run the modules you want from ```_Helper.py```.
+  - Fill out the variables inside ```Basic Image Processing/Basic Init for Image Helper``` and/or ```Image Captioning Helper/Basic Imports``` in `_Helper.py` under their respective module names (Tabs/Locations provided in this message)
+- Run the modules in an order, do not skip the order of the modules and run a lower one before a higher one, it will break.
+  - You can skip any modules you do not want to run, but do it in the order of the given modules.
+
 ## Contributing
 
 We welcome contributions! If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
@@ -43,7 +48,7 @@ Don't forget to give the project a star! ⭐
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the GPL-3.0 License. See `LICENSE` for more information.
 
 ## Acknowledgements
 
