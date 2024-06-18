@@ -16,6 +16,7 @@ This tool is designed to streamline the process of cropping faces from images, e
 
 Before you begin, ensure you have the following installed:
 - Python 3.x
+  - `Suggested` Python 3.10.11
 
 ### Installation
 
