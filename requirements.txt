@@ -1,8 +1,6 @@
-opencv-python
-imagehash
-Pillow
-PIL
-tqdm
-rembg
-pandas
-collections
+opencv-python == 4.10.0.82
+imagehash == 4.3.1
+Pillow == 9.3.0
+tqdm == 4.65.2
+rembg == 2.0.57
+pandas == 1.5.1
