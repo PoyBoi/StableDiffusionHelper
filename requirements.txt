@@ -4,3 +4,5 @@ Pillow
 PIL
 tqdm
 rembg
+pandas
+collections
