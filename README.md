@@ -35,12 +35,14 @@ Before you begin, ensure you have the following installed:
 
 ### Usage
 
-- To generate captions for the images, use the [WebUI of stable diffusion](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
-  - Then move the images AND captions to a folder, and that is the location you should provide for `folder_loc` inside ```Image Captioning Helper/Basic Imports```
-- Run the modules you want from ```_Helper.py```.
-  - Fill out the variables inside ```Basic Image Processing/Basic Init for Image Helper``` and/or ```Image Captioning Helper/Basic Imports``` in `_Helper.py` under their respective module names (Tabs/Locations provided in this message)
-- Run the modules in an order, do not skip the order of the modules and run a lower one before a higher one, it will break.
-  - You can skip any modules you do not want to run, but do it in the order of the given modules.
+- Run the `Run.bat` file (Will open the .ipynb inside the automatic opening IDE that you have assigned).
+- Once Inside the editor of you choice:
+  - To generate captions for the images, use the [WebUI of stable diffusion](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
+    - Then move the images AND captions to a folder, and that is the location you should provide for `folder_loc` inside ```Image Captioning Helper/Basic Imports```
+  - Run the modules you want from ```_Helper.py```.
+    - Fill out the variables inside ```Basic Image Processing/Basic Init for Image Helper``` and/or ```Image Captioning Helper/Basic Imports``` in `_Helper.py` under their respective module names (Tabs/Locations provided in this message)
+  - Run the modules in an order, do not skip the order of the modules and run a lower one before a higher one, it will break.
+    - You can skip any modules you do not want to run, but do it in the order of the given modules.
 
 
 ## Contributing
