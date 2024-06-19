@@ -4,4 +4,6 @@
 
 - Remove Images which do not meet a minimum size requirement
 
-- Add a CLI Client
+- Add a CLI Client/Gradio/.bat
+
+- Add a method to change that cropping from square to any shape
