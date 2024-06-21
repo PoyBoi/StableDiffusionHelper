@@ -15,8 +15,8 @@ echo %time% Activating venv...
 call venv_sdh\Scripts\activate
 
 :: Pull from Git
-echo %time% Pulling from git...
-git pull
+:: echo %time% Pulling from git...
+:: git pull
 
 :: Update requirements
 echo %time% Updating requirements...
@@ -33,6 +33,7 @@ echo.
 echo %time% Launching .ipynb...
 echo .ipynb launched at http://localhost:8888/notebooks/_Helper.ipynb
 call jupyter notebook _Helper.ipynb --NotebookApp.kernel_name=python3 > nul 2>&1
+
 
 
 :: Deactivate venv

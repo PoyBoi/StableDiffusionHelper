@@ -1,26 +1,24 @@
 @echo off
+setlocal
 
+:: Check if venv_sdh exists
+if not exist venv_sdh (
+    echo %time% Creating venv...
+    python -m venv venv_sdh
+)
+
+:: Deactive venv
+call venv_sdh\Scripts\deactivate.bat
+
+:: Activate venv
+echo %time% Activating venv...
+call venv_sdh\Scripts\activate
+
+echo %time% Updating Repository
 git pull
 
-start "" "_Helper.ipynb"
+call Run_opt.bat
+
+:: start "" "_Helper.ipynb"
 
 @echo off
-
-@REM :: Install pip (if not already installed)
-@REM set python_ver=36
-@REM python ./get-pip.py
-@REM cd \
-@REM cd \python%python_ver%\Scripts\
-@REM pip install xlrd
-@REM pip install XlsxWriter
-@REM :: Pause to keep the window open
-@REM pause
-@REM exit
-
-@REM :: Create a requirements.txt file with the following content:
-@REM :: xlrd
-@REM :: XlsxWriter
-@REM :: tkinter
-
-@REM :: Install the modules from requirements.txt
-@REM pip install -r requirements.txt
