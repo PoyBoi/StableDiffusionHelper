@@ -13,7 +13,7 @@ This tool is designed to streamline the process of cropping faces from images, e
 ## Getting Started
 
 ### ‼️ V IMP ‼️ [Troubleshooting]:
-If your .bat file does not have a `::test test` at the end of it, follow these steps:
+If your `Run.bat` file does not have a `::test test` at the end of it, follow these steps:
 - Do a Fresh clone
 
 #### Or
