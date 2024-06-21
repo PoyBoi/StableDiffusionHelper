@@ -12,6 +12,20 @@ This tool is designed to streamline the process of cropping faces from images, e
 
 ## Getting Started
 
+### ‼️ V IMP ‼️ [Troubleshooting]:
+If your .bat file does not have a `::test test` at the end of it, follow these steps:
+- Do a Fresh clone
+
+#### Or
+
+- Open git bash in the repo location
+- Run these commands:
+- ```
+  git add *
+  git stash
+  git pull
+- And then run the `run.bat` file, everything should work as expected
+
 ### Prerequisites
 
 Before you begin, ensure you have the following installed:
