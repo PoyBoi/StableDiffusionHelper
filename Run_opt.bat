@@ -22,7 +22,6 @@ call venv_sdh\Scripts\activate
 echo %time% Updating requirements...
 pip install -r requirements.txt > nul 2>&1
 
-echo %time% Updating/Checking
 for /l %%i in (1,1,10) do (
     <nul set /p "=."
     ping localhost -n 2 > nul

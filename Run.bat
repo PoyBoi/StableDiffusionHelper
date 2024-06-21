@@ -15,10 +15,19 @@ echo %time% Activating venv...
 call venv_sdh\Scripts\activate
 
 echo %time% Updating Repository
-git pull
+git pull > nul 2>&1
+
+echo %time% Updating/Checking
+for /l %%i in (1,1,10) do (
+    <nul set /p "=."
+    ping localhost -n 2 > nul
+)
+echo.
 
 call Run_opt.bat
 
 :: start "" "_Helper.ipynb"
 
 @echo off
+
+:: test test
