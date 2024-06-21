@@ -15,6 +15,8 @@ echo %time% Activating venv...
 call venv_sdh\Scripts\activate
 
 echo %time% Updating Repository
+git add *
+git stash
 git pull > nul 2>&1
 
 echo %time% Updating/Checking
