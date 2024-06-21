@@ -7,3 +7,5 @@
 - Add a CLI Client/Gradio/.bat
 
 - Add a method to change that cropping from square to any shape
+
+- Add a .txt that stores the data that the person puts
