@@ -10,3 +10,6 @@
 [ ] Add a method to change that cropping from square to any shape
 
 [ ] Add a .txt that stores the data that the person puts
+
+[ ] Add a GUI Based cropping tool for manual cropping of images
+  - hard bound to the dimensions given
