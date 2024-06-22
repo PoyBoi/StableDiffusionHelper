@@ -7,3 +7,4 @@
 !.gitignore
 !todo.md
 !*.bat
+gradio_test.py
