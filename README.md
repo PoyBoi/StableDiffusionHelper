@@ -25,6 +25,8 @@ Check for troubleshooting here: [Troubleshooting](https://github.com/PoyBoi/Stab
 
 - Download and run the `install.bat` from [releases](https://github.com/PoyBoi/StableDiffusionHelper/releases/tag/v0.1-beta)
   - Will automatically install dependancies and open the ipynb
+- If you already have it installed and want to update:
+  - run `troubleshoot.bat` and then run `run.bat`
 
 ### 🔧 Usage
 - Run the `Run.bat` file (Will open the .ipynb inside a jupytner notebook on localhost[8888].
