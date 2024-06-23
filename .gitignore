@@ -8,5 +8,8 @@
 !todo.md
 !*.bat
 gradio_test.py
-!scripts\img_processing.py
+!scripts
 !img_processing.py
+!caption_list.py
+!__init__.py
+!delete_words.py
