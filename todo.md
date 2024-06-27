@@ -22,11 +22,6 @@
 
 
 <!--  What I have to do: 
-for autoCrop: Make code that works with rectangle/free form crop
-
-fix the libpng issue
-
-add anime face to face detect
 resources: https://github.com/XavierJiezou/anime-face-detection
 face landmark (p good): https://github.com/hysts/anime-face-detector
 onnx install fixer: https://onnxruntime.ai/docs/install/#install-onnx-runtime-gpu-cuda-12x
@@ -42,5 +37,5 @@ pip install rembg[gpu] onnxruntime-gpu
 Add manual cropping from gradio_2.py
 Fix the location of the models to check for relative pathing
 
-Now: Implementing cv2 imread to images that get passed to the detector :)
+Have to add all new functionalities to the .ipynb, or discontinue it
  -->
