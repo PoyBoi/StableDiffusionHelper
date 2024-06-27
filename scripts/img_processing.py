@@ -3,7 +3,9 @@ import cv2
 import numpy as np
 
 import imagehash
-from PIL import Image
+from PIL import Image, ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+
 from rembg import remove
 import imghdr
 import dlib
@@ -94,8 +96,9 @@ def process_images(folder_path, x, y, progress=gr.Progress()):
         # print("Inside", count)
 
         file_path = os.path.join(folder_path, filename)
-        # img.info.pop('icc_profile', None)
         # delete_iccfile(file_path)
+        # img.info.pop('icc_profile', None)
+        delete_iccfile(file_path)
         image = cv2.imread(file_path)
         if image is None:
             continue
@@ -178,9 +181,11 @@ def detect_faces_and_evaluate(image, min_confidence, min_size, min_sharpness, bl
                 faces_detected.append((confidence, face_size, face_sharpness))
     return faces_detected
 
-def detect_anime(img, min_confidence, min_size, min_sharpness, blur_threshold, mode):
-    
-    face_detector = dlib.simple_object_detector(r"StableDiffusionHelper\detector_face.svm")
+def detect_anime(img, min_confidence, min_size, min_sharpness, blur_threshold, mode, face_detector):
+    # current_folder = os.getcwd()
+    # modelFile = os.path.join(current_folder, "models", "detector_face.svm")
+
+    # face_detector = dlib.simple_object_detector(modelFile)
     faces = face_detector(img)
     
     faces_detected = []
@@ -225,8 +230,9 @@ def select_best_images(
     modelFile = os.path.join(current_folder, "models", "opencv_face_detector_uint8.pb")
     configFile = os.path.join(current_folder, "models", "opencv_face_detector.pbtxt")
 
-    # modelFile = r"C:\Users\parvs\VSC Codes\Python-root\StableDiffusionHelper\opencv_face_detector_uint8.pb"
-    # configFile = r"C:\Users\parvs\VSC Codes\Python-root\StableDiffusionHelper\opencv_face_detector.pbtxt"
+    modelFile_x = os.path.join(current_folder, "models", "detector_face.svm")
+
+    face_detector = dlib.simple_object_detector(modelFile_x)
 
     if os.path.exists(modelFile) != True or os.path.exists(configFile) != True:
         print("ERROR: KEY FILES FOR RUNNING THIS MODEL NOT FOUND, PLEASE FIND THEM AND INSTALL THEM")
@@ -246,27 +252,30 @@ def select_best_images(
         # print(2.1)
         for filename in files:
             file_path = os.path.join(folder_path, filename)
-            # delete_iccfile(file_path)
+            delete_iccfile(file_path)
             image = cv2.imread(file_path)
             if image is None:
                 continue
-            # print(2.2)
+            print(2.2, filename)
             image_no_black_bars = remove_black_bars(image)
             if face_type == "Realistic":
                 faces_detected = detect_faces_and_evaluate(image_no_black_bars, min_confidence, min_size * image_no_black_bars.size, min_sharpness, blur_threshold, net)
             elif face_type == "Anime-like":
-                faces_detected = detect_anime(image_no_black_bars, min_confidence, min_size * image_no_black_bars.size, min_sharpness, blur_threshold, "select")
+                # print(2.3, "in", filename)
+                faces_detected = detect_anime(image_no_black_bars, min_confidence, min_size * image_no_black_bars.size, min_sharpness, blur_threshold, "select", face_detector)
+                # print(2.4, "out", filename)
 
             if faces_detected:
                 rating = sum([face[0] + face[1] for face in faces_detected]) 
                 image_ratings.append((rating, file_path))
             count += 1
             progress(count / image_count, desc=f"Checking Images for Suitability, on: {filename}")
-        # print(2.3)
+        print(2.5)
         # Sort images based on ratings
         if top_n == 0:
             top_n = len(files)
         top_images = sorted(image_ratings, key=lambda x: x[0], reverse=True)[:top_n]
+        # print(2.6)
         
         for _, top_image_path in top_images:
             filename = os.path.basename(top_image_path)
@@ -302,10 +311,13 @@ def remove_background_from_images(input_folder, o_p, progress = gr.Progress()):
         
     return output_folder
 
-def faceCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=512, y=512, face_type = "Realistic"):
+def faceCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=512, y=512, face_type = "Realistic", face_detector = "None"):
     
+    # current_folder = os.getcwd()
+    # modelFile = os.path.join(current_folder, "models", "detector_face.svm")
+
+    # face_detector = dlib.simple_object_detector(modelFile)
     detector = dlib.get_frontal_face_detector()
-    face_detector = dlib.simple_object_detector(r"C:\Users\parvs\VSC Codes\Python-root\StableDiffusionHelper\detector_face.svm")
 
     _, ext = os.path.splitext(fName)
 
@@ -334,7 +346,7 @@ def faceCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=512, y=51
         face_failed.append(fName)
     else:
         if face_type == "Anime-like":
-            ae = detect_anime(img, 0.7, 0.009, 100, 100, "crop")
+            ae = detect_anime(img, 0.7, 0.009, 100, 100, "crop", face_detector)
             fx, fy, fw, fh = ae[0], ae[1], ae[2], ae[3]
         elif face_type == "Realistic":
             areas = [face.width() * face.height() for face in faces]
@@ -396,7 +408,11 @@ def main_call(folder_path, x=512, y=512, imp = 1, ratio_select = "Square", face_
     face_failed = []
 
     resized_folder_path = os.path.join(folder_path, "Cropped_Images")
-    # print(resized_folder_path)
+
+    current_folder = os.getcwd()
+    modelFile_x = os.path.join(current_folder, "models", "detector_face.svm")
+
+    face_detector = dlib.simple_object_detector(modelFile_x)
     
     if not os.path.exists(resized_folder_path):
         print(r"Made /resized folder")
@@ -428,10 +444,10 @@ def main_call(folder_path, x=512, y=512, imp = 1, ratio_select = "Square", face_
                     if ratio_select == "Square":
                         # print("Square Selected")
                         # print("Going in")
-                        faceCrop(resized_folder_path, failed_img, face_failed, i, img, imp, x, y, face_type)
+                        faceCrop(resized_folder_path, failed_img, face_failed, i, img, imp, x, y, face_type, face_detector)
                     elif ratio_select == "Rectangle":
                         # print("Rectangle Selected")
-                        rectangularCrop(resized_folder_path, failed_img, face_failed, i, img, imp, x, y, face_type)
+                        rectangularCrop(resized_folder_path, failed_img, face_failed, i, img, imp, x, y, face_type, face_detector)
             elif os.path.isdir(file_loc):
                 print(i, ": Is a folder")
             elif i.endswith('.txt'):
@@ -455,11 +471,13 @@ def main_call(folder_path, x=512, y=512, imp = 1, ratio_select = "Square", face_
     if len(face_failed) != 0:
         print("\nThese images failed: \nReason: Face not found: \n", face_failed, "\nCount:", len(face_failed))
 
-def rectangularCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=512, y=683, face_type = "Realistic"):
+def rectangularCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=512, y=683, face_type = "Realistic", face_detector = "None"):
     
-    
+    # current_folder = os.getcwd()
+    # modelFile = os.path.join(current_folder, "models", "detector_face.svm")
+
+    # face_detector = dlib.simple_object_detector(modelFile)
     detector = dlib.get_frontal_face_detector()
-    face_detector = dlib.simple_object_detector(r"C:\Users\parvs\VSC Codes\Python-root\StableDiffusionHelper\detector_face.svm")
     
     _, ext = os.path.splitext(fName)
     fName = fName.split(".")[0]
@@ -482,7 +500,7 @@ def rectangularCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=51
         face_failed.append(fName)
     else:
         if face_type == "Anime-like":
-            ae = detect_anime(img, 0.8, 0.009, 100, 100, "crop")
+            ae = detect_anime(img, 0.8, 0.009, 100, 100, "crop", face_detector)
             # print(ae)
             fx, fy, fw, fh = ae[0], ae[1], ae[2], ae[3]
         elif face_type == "Realistic":
