@@ -15,3 +15,4 @@ gradio_test.py
 !delete_words.py
 !detector_face.svm
 !models
+!gradio.py
