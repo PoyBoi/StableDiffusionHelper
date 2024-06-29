@@ -19,3 +19,13 @@
   [ ] Add a image parameter check tool inside gradio
 
   [x] Add a loading bar
+
+  [x] Maintain resize code inside of the cropping tool
+
+  [x] Make it so that the images from inside folder "folder_loc" move onto "upload images from folder" and are applied to the image box via "load images"
+
+  [x] Fix the incorrect cropping shown in the image box
+
+    [ ] Also, fix the size of the input and output box so that they don't flare up as such (height, width)
+
+  [ ] Find out why 240/236 were causing an issue, the issue, as i see it, is in detect_anime, inside the face detector, as far as i remember, similar issue on realistic images also
