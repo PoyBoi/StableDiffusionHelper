@@ -151,10 +151,6 @@ def is_image_blurry(image, blur_threshold):
 
 def detect_faces_and_evaluate(image, min_confidence, min_size, min_sharpness, blur_threshold, net):
     
-    """
-    Detect faces in an image and evaluate based on size, sharpness, and blurriness.
-    """
-    
     if image is None or image.size == 0:
         return []
     if is_image_blurry(image, blur_threshold):
@@ -182,12 +178,22 @@ def detect_faces_and_evaluate(image, min_confidence, min_size, min_sharpness, bl
     return faces_detected
 
 def detect_anime(img, min_confidence, min_size, min_sharpness, blur_threshold, mode, face_detector):
-    # current_folder = os.getcwd()
-    # modelFile = os.path.join(current_folder, "models", "detector_face.svm")
 
-    # face_detector = dlib.simple_object_detector(modelFile)
-    faces = face_detector(img)
+    # PORTED CODE FROM DFAE (ABOVE)
+    if img is None or img.size == 0:
+        return []
+    if is_image_blurry(img, blur_threshold):
+        return []
     
+    # END
+
+    # print("in_1")
+    try:
+        faces = face_detector(img)
+    except Exception as e:
+        faces = []
+    
+    # print("in_2")
     faces_detected = []
     face_crd = []
     if len(faces) > 0:
@@ -198,6 +204,7 @@ def detect_anime(img, min_confidence, min_size, min_sharpness, blur_threshold, m
             y_end = rect.bottom()
             face_width = x_end - x_start
             face_height = y_end - y_start
+            # print("in_3")
             if abs(face_width - face_height) > 3:
                 continue
             face = img[y_start:y_end, x_start:x_end]
@@ -210,6 +217,8 @@ def detect_anime(img, min_confidence, min_size, min_sharpness, blur_threshold, m
                 faces_detected.append((face_size, face_sharpness))
     else:
         None
+
+    # print("in_4")
     if mode == "crop":
         return face_crd
     if mode == "select":
@@ -225,63 +234,70 @@ def select_best_images(
         top_n:int = 0,
         progress = gr.Progress()
         ):
-    current_folder = os.getcwd()
+    try: 
+        current_folder = os.getcwd()
 
-    modelFile = os.path.join(current_folder, "models", "opencv_face_detector_uint8.pb")
-    configFile = os.path.join(current_folder, "models", "opencv_face_detector.pbtxt")
+        modelFile = os.path.join(current_folder, "models", "opencv_face_detector_uint8.pb")
+        configFile = os.path.join(current_folder, "models", "opencv_face_detector.pbtxt")
 
-    modelFile_x = os.path.join(current_folder, "models", "detector_face.svm")
+        modelFile_x = os.path.join(current_folder, "models", "detector_face.svm")
 
-    face_detector = dlib.simple_object_detector(modelFile_x)
+        face_detector = dlib.simple_object_detector(modelFile_x)
 
-    if os.path.exists(modelFile) != True or os.path.exists(configFile) != True:
-        print("ERROR: KEY FILES FOR RUNNING THIS MODEL NOT FOUND, PLEASE FIND THEM AND INSTALL THEM")
+        if os.path.exists(modelFile) != True or os.path.exists(configFile) != True:
+            print("ERROR: KEY FILES FOR RUNNING THIS MODEL NOT FOUND, PLEASE FIND THEM AND INSTALL THEM")
 
-    else:
-        net = cv2.dnn.readNetFromTensorflow(modelFile, configFile)
-        selected_images_folder = os.path.join(folder_path, "SelectedImages")
-        if not os.path.exists(selected_images_folder):
-            os.makedirs(selected_images_folder)
-        
-        image_ratings = []  # List to store ratings and file paths
-        
-        files = [f for f in os.listdir(folder_path) if f.endswith(('.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.webp'))]
-        progress(0, desc="Starting Image Selection ...")
-        time.sleep(1)
-        image_count, count = len(files), 0
-        # print(2.1)
-        for filename in files:
-            file_path = os.path.join(folder_path, filename)
-            delete_iccfile(file_path)
-            image = cv2.imread(file_path)
-            if image is None:
-                continue
-            print(2.2, filename)
-            image_no_black_bars = remove_black_bars(image)
-            if face_type == "Realistic":
-                faces_detected = detect_faces_and_evaluate(image_no_black_bars, min_confidence, min_size * image_no_black_bars.size, min_sharpness, blur_threshold, net)
-            elif face_type == "Anime-like":
+        else:
+            net = cv2.dnn.readNetFromTensorflow(modelFile, configFile)
+            selected_images_folder = os.path.join(folder_path, "SelectedImages")
+            if not os.path.exists(selected_images_folder):
+                os.makedirs(selected_images_folder)
+            
+            image_ratings = []  # List to store ratings and file paths
+            
+            files = [f for f in os.listdir(folder_path) if f.endswith(('.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.webp'))]
+            progress(0, desc="Starting Image Selection ...")
+            time.sleep(1)
+            image_count, count = len(files), 0
+            # print(2.1)
+            for filename in files:
+                file_path = os.path.join(folder_path, filename)
+                delete_iccfile(file_path)
+                image = cv2.imread(file_path)
+                if image is None:
+                    continue
+                # print(2.2, filename)
+                image_no_black_bars = remove_black_bars(image)
                 # print(2.3, "in", filename)
-                faces_detected = detect_anime(image_no_black_bars, min_confidence, min_size * image_no_black_bars.size, min_sharpness, blur_threshold, "select", face_detector)
+                try:
+                    if face_type == "Realistic":
+                        faces_detected = detect_faces_and_evaluate(image_no_black_bars, min_confidence, min_size * image_no_black_bars.size, min_sharpness, blur_threshold, net)
+                    elif face_type == "Anime-like":                    
+                        faces_detected = detect_anime(image_no_black_bars, min_confidence, min_size * image_no_black_bars.size, min_sharpness, blur_threshold, "select", face_detector)
+                except Exception as e:
+                    print("oops, ran into {}".format(e))
+                
                 # print(2.4, "out", filename)
 
-            if faces_detected:
-                rating = sum([face[0] + face[1] for face in faces_detected]) 
-                image_ratings.append((rating, file_path))
-            count += 1
-            progress(count / image_count, desc=f"Checking Images for Suitability, on: {filename}")
-        print(2.5)
-        # Sort images based on ratings
-        if top_n == 0:
-            top_n = len(files)
-        top_images = sorted(image_ratings, key=lambda x: x[0], reverse=True)[:top_n]
-        # print(2.6)
-        
-        for _, top_image_path in top_images:
-            filename = os.path.basename(top_image_path)
-            move(top_image_path, os.path.join(selected_images_folder, filename))
-        
-        return selected_images_folder
+                if faces_detected:
+                    rating = sum([face[0] + face[1] for face in faces_detected]) 
+                    image_ratings.append((rating, file_path))
+                count += 1
+                progress(count / image_count, desc=f"Checking Images for Suitability, on: {filename}")
+            # print(2.5)
+            # Sort images based on ratings
+            if top_n == 0:
+                top_n = len(files)
+            top_images = sorted(image_ratings, key=lambda x: x[0], reverse=True)[:top_n]
+            # print(2.6)
+            
+            for _, top_image_path in top_images:
+                filename = os.path.basename(top_image_path)
+                move(top_image_path, os.path.join(selected_images_folder, filename))
+            
+            return selected_images_folder
+    except Exception as e:
+        print("Ran into an issue: ", e)
 
 def remove_background_from_images(input_folder, o_p, progress = gr.Progress()):
     output_folder = os.path.join(input_folder, o_p)
