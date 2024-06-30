@@ -36,12 +36,31 @@ def convert_images_to_png(source_folder, progress=gr.Progress()):
     time.sleep(1)
     image_count, count = 0, 0
     image_extensions = ['.jpg', '.jpeg', '.bmp', '.gif', '.tiff', '.webp', '.png']
+
+    # LOGGING
+    log_file = "sdh_log.txt"
+
+    with open(log_file, "r") as g:
+        textb4 = g.read()
+
+    with open(log_file, "w") as f:
+        f.write(textb4)
+        f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Conversion to PNG\n")
+        f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Current File: None\n") 
+    # /LOGGING
+
     try:
         for filename in os.listdir(source_folder):
             if any(filename.lower().endswith(ext) for ext in image_extensions):
                 image_count += 1
 
         for filename in os.listdir(source_folder):
+            
+            with open(log_file, "w") as f:
+                f.write(textb4)
+                f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Conversion to PNG\n")
+                f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Current File: {filename}\n") 
+
             if filename.lower().endswith(('.jpg', '.jpeg', '.bmp', '.gif', '.tiff', '.webp')):
                 file_path = os.path.join(source_folder, filename)
                 with Image.open(file_path) as img:
@@ -58,8 +77,20 @@ def convert_images_to_png(source_folder, progress=gr.Progress()):
                 os.remove(file_path)
                 count += 1
                 progress(count / image_count, desc=f"Converting {filename} to .png")
+        
+        with open(log_file, "w") as f:
+                f.write(textb4)
+                f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Conversion to PNG\n")
+                f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Finished\n") 
+
         return "❣️ All Images Converted to .PNG ❣️"
     except Exception as e:
+
+        with open(log_file, "w") as f:
+                f.write(textb4)
+                f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Conversion to PNG\n")
+                f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Ran into Error -> {e}\n") 
+
         return "Error: {}".format(e)
 
 def remove_black_bars(image):
@@ -74,6 +105,19 @@ def remove_black_bars(image):
     return image
 
 def process_images(folder_path, x, y, progress=gr.Progress()):
+
+    # LOGGING
+    log_file = "sdh_log.txt"
+
+    with open(log_file, "r") as g:
+        textb4 = g.read()
+
+    with open(log_file, "w") as f:
+        f.write(textb4)
+        f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Duplicate Check\n")
+        f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Current File: None\n") 
+    # /LOGGING
+
     progress(0, desc="Starting Duplicate Image Check ...")
     time.sleep(1)
 
@@ -94,6 +138,10 @@ def process_images(folder_path, x, y, progress=gr.Progress()):
     for filename in files:
         
         # print("Inside", count)
+        with open(log_file, "w") as f:
+            f.write(textb4)
+            f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Duplicate Check\n")
+            f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Current File: {filename}\n") 
 
         file_path = os.path.join(folder_path, filename)
         # delete_iccfile(file_path)
@@ -124,6 +172,10 @@ def process_images(folder_path, x, y, progress=gr.Progress()):
         progress(count / image_count, desc=f"Checking for Duplicates, on: {filename}")
         
         # return "❣️ All Images Converted to .PNG ❣️"
+        with open(log_file, "w") as f:
+            f.write(textb4)
+            f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Duplicate Check\n")
+            f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Finished\n") 
     
     if len([i for i in os.listdir(duplicate_images_folder)]) == 0:
         os.rmdir(duplicate_images_folder)
@@ -225,16 +277,28 @@ def detect_anime(img, min_confidence, min_size, min_sharpness, blur_threshold, m
         return faces_detected
 
 def select_best_images(
-        folder_path:str, 
-        face_type:str, 
-        min_confidence:float = 0.9, 
-        min_size:float = 0.009, 
-        min_sharpness:float = 100, 
-        blur_threshold:float = 100,
-        top_n:int = 0,
-        progress = gr.Progress()
-        ):
-    try: 
+        folder_path: str,
+        face_type: str,
+        min_confidence: float = 0.9,
+        min_size: float = 0.009,
+        min_sharpness: float = 100,
+        blur_threshold: float = 100,
+        top_n: int = 0,
+        progress=gr.Progress()
+):
+    try:
+        # LOGGING
+        log_file = "sdh_log.txt"
+
+        with open(log_file, "r") as g:
+            textb4 = g.read()
+
+        with open(log_file, "w") as f:
+            f.write(textb4)
+            f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Image Selection\n")
+            f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Current File: None\n") 
+        # /LOGGING
+
         current_folder = os.getcwd()
 
         modelFile = os.path.join(current_folder, "models", "opencv_face_detector_uint8.pb")
@@ -245,42 +309,67 @@ def select_best_images(
         face_detector = dlib.simple_object_detector(modelFile_x)
 
         if os.path.exists(modelFile) != True or os.path.exists(configFile) != True:
-            print("ERROR: KEY FILES FOR RUNNING THIS MODEL NOT FOUND, PLEASE FIND THEM AND INSTALL THEM")
-
+            with open(log_file, "a") as f:  # Open in append mode to add to the log file
+                f.write("ERROR: KEY FILES FOR RUNNING THIS MODEL NOT FOUND, PLEASE FIND THEM AND INSTALL THEM\n")
         else:
             net = cv2.dnn.readNetFromTensorflow(modelFile, configFile)
             selected_images_folder = os.path.join(folder_path, "SelectedImages")
             if not os.path.exists(selected_images_folder):
                 os.makedirs(selected_images_folder)
-            
+
             image_ratings = []  # List to store ratings and file paths
-            
+
             files = [f for f in os.listdir(folder_path) if f.endswith(('.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.webp'))]
             progress(0, desc="Starting Image Selection ...")
             time.sleep(1)
             image_count, count = len(files), 0
             # print(2.1)
             for filename in files:
+                
+                # LOGGING
+                with open(log_file, "w") as f:
+                    f.write(textb4)
+                    f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Image Selection\n")
+                    f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Current File: {filename}\n") 
+                # /LOGGING
+
                 file_path = os.path.join(folder_path, filename)
-                delete_iccfile(file_path)
+                delete_iccfile(file_path)  # Assuming this is a defined function
                 image = cv2.imread(file_path)
                 if image is None:
                     continue
                 # print(2.2, filename)
-                image_no_black_bars = remove_black_bars(image)
-                # print(2.3, "in", filename)
+                image_no_black_bars = remove_black_bars(image)  # Assuming this is a defined function
+
+                with open(log_file, "a") as f:
+                    f.write(f"Processing image: {filename} - {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+
                 try:
                     if face_type == "Realistic":
-                        faces_detected = detect_faces_and_evaluate(image_no_black_bars, min_confidence, min_size * image_no_black_bars.size, min_sharpness, blur_threshold, net)
-                    elif face_type == "Anime-like":                    
-                        faces_detected = detect_anime(image_no_black_bars, min_confidence, min_size * image_no_black_bars.size, min_sharpness, blur_threshold, "select", face_detector)
+                        faces_detected = detect_faces_and_evaluate(
+                            image_no_black_bars,
+                            min_confidence,
+                            min_size * image_no_black_bars.size,
+                            min_sharpness,
+                            blur_threshold,
+                            net
+                        )
+                    elif face_type == "Anime-like":
+                        faces_detected = detect_anime(
+                            image_no_black_bars,
+                            min_confidence,
+                            min_size * image_no_black_bars.size,
+                            min_sharpness,
+                            blur_threshold,
+                            "select",
+                            face_detector
+                        )
                 except Exception as e:
-                    print("oops, ran into {}".format(e))
-                
-                # print(2.4, "out", filename)
+                    with open(log_file, "a") as f:
+                        f.write(f"Error during face detection: {e} - {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
 
                 if faces_detected:
-                    rating = sum([face[0] + face[1] for face in faces_detected]) 
+                    rating = sum([face[0] + face[1] for face in faces_detected])
                     image_ratings.append((rating, file_path))
                 count += 1
                 progress(count / image_count, desc=f"Checking Images for Suitability, on: {filename}")
@@ -288,15 +377,26 @@ def select_best_images(
             # Sort images based on ratings
             if top_n == 0:
                 top_n = len(files)
-            top_images = sorted(image_ratings, key=lambda x: x[0], reverse=True)[:top_n]
-            # print(2.6)
             
+            top_images = image_ratings[:top_n]  
+
+            # Sort the top_images based on ratings
+            top_images = sorted(top_images, key=lambda x: x[0], reverse=True) 
+            # print(2.6)
+
+            with open(log_file, "w") as f:
+                    f.write(textb4)
+                    f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Image Selection\n")
+                    f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Finished\n") 
+
             for _, top_image_path in top_images:
                 filename = os.path.basename(top_image_path)
-                move(top_image_path, os.path.join(selected_images_folder, filename))
-            
+                move(top_image_path, os.path.join(selected_images_folder, filename))  # Assuming this is a defined function
+
             return selected_images_folder
     except Exception as e:
+        with open(log_file, "a") as f:
+            f.write(f"Ran into an issue: {e} - {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
         print("Ran into an issue: ", e)
 
 def remove_background_from_images(input_folder, o_p, progress = gr.Progress()):
@@ -309,8 +409,25 @@ def remove_background_from_images(input_folder, o_p, progress = gr.Progress()):
     time.sleep(1)
     image_count, count = len(image_files), 0
     # print(input_folder, image_count, count)
+    # LOGGING
+    log_file = "sdh_log.txt"
+
+    with open(log_file, "r") as g:
+        textb4 = g.read()
+
+    with open(log_file, "w") as f:
+        f.write(textb4)
+        f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Background Removal\n")
+        f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Current File: None\n") 
+    # /LOGGING
     
     for filename in image_files:
+        
+        with open(log_file, "w") as f:
+            f.write(textb4)
+            f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Background Removal\n")
+            f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Current File: {filename}\n") 
+
         input_path = os.path.join(input_folder, filename)
         output_path = os.path.join(output_folder, filename)
 
@@ -324,6 +441,10 @@ def remove_background_from_images(input_folder, o_p, progress = gr.Progress()):
         
         count += 1
         progress(count / image_count, desc=f"Removing Image Background, on: {filename}")
+        with open(log_file, "w") as f:
+            f.write(textb4)
+            f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Background Removal\n")
+            f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Finished\n") 
         
     return output_folder
 
@@ -429,6 +550,20 @@ def main_call(folder_path, x=512, y=512, imp = 1, ratio_select = "Square", face_
     modelFile_x = os.path.join(current_folder, "models", "detector_face.svm")
 
     face_detector = dlib.simple_object_detector(modelFile_x)
+
+    # LOGGING
+    log_file = "sdh_log.txt"
+
+    with open(log_file, "r") as g:
+        textb4 = g.read()
+        g.close()
+
+    with open(log_file, "w") as f:
+        f.write(textb4)
+        f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Automatic Cropping\n")
+        f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Current File: None\n") 
+        f.close()
+    # /LOGGING
     
     if not os.path.exists(resized_folder_path):
         print(r"Made /resized folder")
@@ -457,6 +592,12 @@ def main_call(folder_path, x=512, y=512, imp = 1, ratio_select = "Square", face_
                     failed_img.append(i)
                     continue
                 else:
+
+                    with open(log_file, "w") as f:
+                        f.write(textb4)
+                        f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Automatic Cropping\n")
+                        f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Current File: {i}\n") 
+                    
                     if ratio_select == "Square":
                         # print("Square Selected")
                         # print("Going in")
@@ -464,6 +605,7 @@ def main_call(folder_path, x=512, y=512, imp = 1, ratio_select = "Square", face_
                     elif ratio_select == "Rectangle":
                         # print("Rectangle Selected")
                         rectangularCrop(resized_folder_path, failed_img, face_failed, i, img, imp, x, y, face_type, face_detector)
+
             elif os.path.isdir(file_loc):
                 print(i, ": Is a folder")
             elif i.endswith('.txt'):
@@ -486,6 +628,11 @@ def main_call(folder_path, x=512, y=512, imp = 1, ratio_select = "Square", face_
 
     if len(face_failed) != 0:
         print("\nThese images failed: \nReason: Face not found: \n", face_failed, "\nCount:", len(face_failed))
+
+    with open(log_file, "w") as f:
+        f.write(textb4)
+        f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Automatic Cropping\n")
+        f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Finished\n")
 
 def rectangularCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=512, y=683, face_type = "Realistic", face_detector = "None"):
     
@@ -572,3 +719,81 @@ def rectangularCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=51
         cv2.imwrite(os.path.join(folder_dir, fName + '_rectangular.png'), cropped_resized)
 
         return cropped_rgb
+    
+def older_code():
+#OG IM PROCESSING CODE
+# def select_best_images(
+#         folder_path:str, 
+#         face_type:str, 
+#         min_confidence:float = 0.9, 
+#         min_size:float = 0.009, 
+#         min_sharpness:float = 100, 
+#         blur_threshold:float = 100,
+#         top_n:int = 0,
+#         progress = gr.Progress()
+#         ):
+#     try: 
+#         current_folder = os.getcwd()
+
+#         modelFile = os.path.join(current_folder, "models", "opencv_face_detector_uint8.pb")
+#         configFile = os.path.join(current_folder, "models", "opencv_face_detector.pbtxt")
+
+#         modelFile_x = os.path.join(current_folder, "models", "detector_face.svm")
+
+#         face_detector = dlib.simple_object_detector(modelFile_x)
+
+#         if os.path.exists(modelFile) != True or os.path.exists(configFile) != True:
+#             print("ERROR: KEY FILES FOR RUNNING THIS MODEL NOT FOUND, PLEASE FIND THEM AND INSTALL THEM")
+
+#         else:
+#             net = cv2.dnn.readNetFromTensorflow(modelFile, configFile)
+#             selected_images_folder = os.path.join(folder_path, "SelectedImages")
+#             if not os.path.exists(selected_images_folder):
+#                 os.makedirs(selected_images_folder)
+            
+#             image_ratings = []  # List to store ratings and file paths
+            
+#             files = [f for f in os.listdir(folder_path) if f.endswith(('.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.webp'))]
+#             progress(0, desc="Starting Image Selection ...")
+#             time.sleep(1)
+#             image_count, count = len(files), 0
+#             # print(2.1)
+#             for filename in files:
+#                 file_path = os.path.join(folder_path, filename)
+#                 delete_iccfile(file_path)
+#                 image = cv2.imread(file_path)
+#                 if image is None:
+#                     continue
+#                 # print(2.2, filename)
+#                 image_no_black_bars = remove_black_bars(image)
+#                 print(2.3, "in", filename)
+#                 try:
+#                     if face_type == "Realistic":
+#                         faces_detected = detect_faces_and_evaluate(image_no_black_bars, min_confidence, min_size * image_no_black_bars.size, min_sharpness, blur_threshold, net)
+#                     elif face_type == "Anime-like":                    
+#                         faces_detected = detect_anime(image_no_black_bars, min_confidence, min_size * image_no_black_bars.size, min_sharpness, blur_threshold, "select", face_detector)
+#                 except Exception as e:
+#                     print("oops, ran into {}".format(e))
+                
+#                 # print(2.4, "out", filename)
+
+#                 if faces_detected:
+#                     rating = sum([face[0] + face[1] for face in faces_detected]) 
+#                     image_ratings.append((rating, file_path))
+#                 count += 1
+#                 progress(count / image_count, desc=f"Checking Images for Suitability, on: {filename}")
+#             # print(2.5)
+#             # Sort images based on ratings
+#             if top_n == 0:
+#                 top_n = len(files)
+#             top_images = sorted(image_ratings, key=lambda x: x[0], reverse=True)[:top_n]
+#             # print(2.6)
+            
+#             for _, top_image_path in top_images:
+#                 filename = os.path.basename(top_image_path)
+#                 move(top_image_path, os.path.join(selected_images_folder, filename))
+            
+#             return selected_images_folder
+#     except Exception as e:
+#         print("Ran into an issue: ", e)
+    None
