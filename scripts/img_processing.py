@@ -81,7 +81,7 @@ def convert_images_to_png(source_folder, progress=gr.Progress()):
         with open(log_file, "w") as f:
                 f.write(textb4)
                 f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Conversion to PNG\n")
-                f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Finished\n") 
+                f.write(f"==================== Process Finished ====================\n") 
 
         return "❣️ All Images Converted to .PNG ❣️"
     except Exception as e:
@@ -175,7 +175,7 @@ def process_images(folder_path, x, y, progress=gr.Progress()):
         with open(log_file, "w") as f:
             f.write(textb4)
             f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Duplicate Check\n")
-            f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Finished\n") 
+            f.write(f"==================== Process Finished ====================\n") 
     
     if len([i for i in os.listdir(duplicate_images_folder)]) == 0:
         os.rmdir(duplicate_images_folder)
@@ -387,7 +387,7 @@ def select_best_images(
             with open(log_file, "w") as f:
                     f.write(textb4)
                     f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Image Selection\n")
-                    f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Finished\n") 
+                    f.write(f"==================== Process Finished ====================\n") 
 
             for _, top_image_path in top_images:
                 filename = os.path.basename(top_image_path)
@@ -632,7 +632,7 @@ def main_call(folder_path, x=512, y=512, imp = 1, ratio_select = "Square", face_
     with open(log_file, "w") as f:
         f.write(textb4)
         f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Automatic Cropping\n")
-        f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Finished\n")
+        f.write(f"==================== Process Finished ====================\n")
 
 def rectangularCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=512, y=683, face_type = "Realistic", face_detector = "None"):
     
