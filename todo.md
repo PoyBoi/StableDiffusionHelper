@@ -38,4 +38,6 @@
 
   [ ] Test out the optimised code
 
+    [ ] Make the code more flexible by making it run the try-except block 1-2 times, if it still fails, then it should just move on or move the image to a different folder
+
   [x] Add a final print the log telling how long it took
