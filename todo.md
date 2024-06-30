@@ -10,6 +10,8 @@
 
 [ ] Add a .txt that stores the data that the person puts
 
+  [x] Added a Logging element and a relative txt file in `sdh_log.txt`
+
 [ ] Add a gradio GUI
 
   [x] Add a GUI Based cropping tool for manual cropping of images
@@ -29,3 +31,5 @@
     [ ] Also, fix the size of the input and output box so that they don't flare up as such (height, width)
 
   [ ] Find out why 240/236 were causing an issue, the issue, as i see it, is in detect_anime, inside the face detector, as far as i remember, similar issue on realistic images also
+
+  [ ] Test out the optimised code
