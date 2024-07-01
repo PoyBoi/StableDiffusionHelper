@@ -81,7 +81,7 @@ def convert_images_to_png(source_folder, progress=gr.Progress()):
         with open(log_file, "w") as f:
                 f.write(textb4)
                 f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Conversion to PNG\n")
-                f.write(f"===================== Process  Finished =====================\n") 
+                f.write(f"===================== Process  Finished =====================\n\n") 
 
         return "❣️ All Images Converted to .PNG ❣️"
     except Exception as e:
@@ -175,7 +175,7 @@ def process_images(folder_path, x, y, progress=gr.Progress()):
         with open(log_file, "w") as f:
             f.write(textb4)
             f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Duplicate Check\n")
-            f.write(f"===================== Process  Finished =====================\n") 
+            f.write(f"===================== Process  Finished =====================\n\n") 
     
     if len([i for i in os.listdir(duplicate_images_folder)]) == 0:
         os.rmdir(duplicate_images_folder)
@@ -387,7 +387,7 @@ def select_best_images(
             with open(log_file, "w") as f:
                     f.write(textb4)
                     f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Image Selection\n")
-                    f.write(f"===================== Process  Finished =====================\n") 
+                    f.write(f"===================== Process  Finished =====================\n\n") 
 
             for _, top_image_path in top_images:
                 filename = os.path.basename(top_image_path)
@@ -444,7 +444,7 @@ def remove_background_from_images(input_folder, o_p, progress = gr.Progress()):
         with open(log_file, "w") as f:
             f.write(textb4)
             f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Background Removal\n")
-            f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Finished\n") 
+            f.write(f"===================== Process  Finished =====================\n\n") 
         
     return output_folder
 
@@ -467,7 +467,7 @@ def faceCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=512, y=51
         return
     
     # print("HIIIEEE")
-    
+    # print(f"\n {face_type}")
     if face_type == "Realistic":
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         oh, ow = len(gray), len(gray[0])
@@ -482,6 +482,7 @@ def faceCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=512, y=51
     if len(faces) == 0:
         face_failed.append(fName)
     else:
+        # print("1.0 in")
         if face_type == "Anime-like":
             ae = detect_anime(img, 0.7, 0.009, 100, 100, "crop", face_detector)
             fx, fy, fw, fh = ae[0], ae[1], ae[2], ae[3]
@@ -489,7 +490,10 @@ def faceCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=512, y=51
             areas = [face.width() * face.height() for face in faces]
             max_area_index = np.argmax(areas)
             fx, fy, fw, fh = faces[max_area_index].left(), faces[max_area_index].top(), faces[max_area_index].width(), faces[max_area_index].height()
+            # print(f"1.5 in {fx, fy, fw, fh}")
 
+        # print("2.0 in")
+        fx, fy, fw, fh = max(0, fx), max(0, fy), max(0, fw), max(0, fh)
         # Calculate desired dimensions for rectangular crop (3:4 aspect ratio)
         h = fh
         w = fh
@@ -523,20 +527,24 @@ def faceCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=512, y=51
             mid_y = mid_x
             # print(2.5, mid_x, mid_y)
 
+        # print("3.0 in")
         # Crop the rectangular region
         cropped = img[fy:fy+mid_y, fx:fx+mid_x]
 
         # cropped = cv2.rectangle(img, (fx, fy), (fx+fw, fy+fh), (0, 255, 0), 2)
 
         # Convert BGR to RGB
+        # print(f"4.0 in \n{cropped}")
         cropped_rgb = cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB)
 
         # Resize the cropped image to the specified dimensions
+        # print(f"5.0 final {cropped_rgb}")
         cropped_resized = cv2.resize(cropped, (x, y))
 
         # Save the image in RGB format
         cv2.imwrite(os.path.join(folder_dir, fName + '_rectangular.png'), cropped_resized)
 
+        # print("6.0 done")
         return cropped_rgb
 
 def main_call(folder_path, x=512, y=512, imp = 1, ratio_select = "Square", face_type = "Realistic", progress = gr.Progress()):
@@ -632,7 +640,7 @@ def main_call(folder_path, x=512, y=512, imp = 1, ratio_select = "Square", face_
     with open(log_file, "w") as f:
         f.write(textb4)
         f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Automatic Cropping\n")
-        f.write(f"===================== Process  Finished =====================\n")
+        f.write(f"===================== Process  Finished =====================\n\n")
 
 def rectangularCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=512, y=683, face_type = "Realistic", face_detector = "None"):
     
