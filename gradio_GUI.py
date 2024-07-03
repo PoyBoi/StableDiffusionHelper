@@ -4,7 +4,6 @@ from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 import time, datetime
-import torch
 
 from numba import cuda
 
@@ -16,7 +15,7 @@ from scripts.img_processing import convert_images_to_png, process_images, select
 
 # Clearing VRAM
 def clear_vram():
-    torch.cuda.empty_cache()
+    # torch.cuda.empty_cache()
 
     # CUDA (via Numba)
     cuda.select_device(0)
