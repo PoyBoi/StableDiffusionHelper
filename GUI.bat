@@ -39,7 +39,8 @@ if "%remRedo%"=="1" (
 echo.
 
 echo %time% Launching GUI...
-call ext_GUI.bat
+
+python gradio_GUI.py
 
 @echo off
 
