@@ -19,11 +19,6 @@ git add *
 git stash
 git pull > nul 2>&1
 
-echo %time% Updating/Checking
-for /l %%i in (1,1,10) do (
-    <nul set /p "=."
-    ping localhost -n 2 > nul
-)
 echo.
 
 :: Launch _Helper.ipynb with a specific kernel (e.g., "python3")
