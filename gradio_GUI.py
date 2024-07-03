@@ -82,17 +82,17 @@ def launch_check(folder_loc, process_select, adv_process_select, ratio_select, r
             ["Folder Location", folder_loc],
             ["", ""],
             ["Basic Processes", process_select],
-            ["Advance Processes", adv_process_select], 
+            ["Advanced Processes", adv_process_select], 
             ["", ""],
-            ["Image Resize Size", f"Height: {h}, Width{w}"],
+            ["Image Resize Size", f"Height: {h}, Width: {w}"],
             ["Crop Ratio", ratio_select],
-            ["Image Size Threshold", f"Height: {y_thresh}, Width{x_thresh}"],
+            ["Image Size Threshold", f"Height: {y_thresh}, Width: {x_thresh}"],
             ["Crop Method", crop_select],
             ["", ""],
             ["Face Zoom-Out Multiplier", zoom2face]
         ]
         
-        return gr.Dataframe(value=data)
+        return gr.Dataframe(value=data, visible=True)
     except Exception as e:
         return "⭕ ERROR ⭕: Cause: \n\n🔧{}🔧".format(e)
 
@@ -165,7 +165,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="orange", secondary_hue="oran
 
 
             check_btn = gr.Button("Check Choices")
-            outputs_check = gr.Dataframe(label="Selected Value", headers=["Choice", "Value"], interactive=False)
+            outputs_check = gr.Dataframe(label="Selected Value", headers=["Choice", "Value"], interactive=False, visible=False)
 
             final_check = gr.Button("Start processing")
             btn_mc = gr.Button(visible=False)
