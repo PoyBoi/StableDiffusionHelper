@@ -461,13 +461,12 @@ def faceCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=512, y=51
     # print(os.path.join(folder_dir, fNameOg))
 
     fName = fName.split(".")[0]
+
     if ext.lower() not in ['.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.webp']:
         print(f"Unsupported image format: {ext}")
         failed_img.append(fName)
         return
-    
-    # print("HIIIEEE")
-    # print(f"\n {face_type}")
+
     if face_type == "Realistic":
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         oh, ow = len(gray), len(gray[0])
@@ -651,6 +650,7 @@ def rectangularCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=51
     detector = dlib.get_frontal_face_detector()
     
     _, ext = os.path.splitext(fName)
+
     fName = fName.split(".")[0]
     if ext.lower() not in ['.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.webp']:
         print(f"Unsupported image format: {ext}")
@@ -680,10 +680,11 @@ def rectangularCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=51
             fx, fy, fw, fh = faces[max_area_index].left(), faces[max_area_index].top(), faces[max_area_index].width(), faces[max_area_index].height()
 
         # Calculate desired dimensions for rectangular crop (3:4 aspect ratio)
+        fx, fy, fw, fh = max(0, fx), max(0, fy), max(0, fw), max(0, fh)
+        
         h = fh
         w = int(h * 3 / 4)
 
-        fx, fy, fw, fh = max(0, fx), max(0, fy), max(0, fw), max(0, fh)
 
         cx, cy = fx + fw//2, fy + fh//2
 
@@ -728,4 +729,4 @@ def rectangularCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=51
         # Save the image in RGB format
         cv2.imwrite(os.path.join(folder_dir, fName + '_rectangular.png'), cropped_resized)
 
-        return cropped_rgb    
+        return cropped_rgb
