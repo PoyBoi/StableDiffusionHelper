@@ -683,6 +683,8 @@ def rectangularCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=51
         h = fh
         w = int(h * 3 / 4)
 
+        fx, fy, fw, fh = max(0, fx), max(0, fy), max(0, fw), max(0, fh)
+
         cx, cy = fx + fw//2, fy + fh//2
 
         # print(0, ow, oh)
@@ -726,5 +728,4 @@ def rectangularCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=51
         # Save the image in RGB format
         cv2.imwrite(os.path.join(folder_dir, fName + '_rectangular.png'), cropped_resized)
 
-        return cropped_rgb
-    
+        return cropped_rgb    
