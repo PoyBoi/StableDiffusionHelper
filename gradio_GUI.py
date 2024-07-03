@@ -80,15 +80,12 @@ def launch_check(folder_loc, process_select, adv_process_select, ratio_select, r
         # return "Folder Location: \t\t\t\t\t\t\t\t\t\t\t" + folder_loc + "\n\nBasic Processes Selected: \t\t\t\t\t\t" + ', '.join(process_select) + "\n\nAdvanced Proccesses Selected: \t\t\t" + ', '.join(adv_process_select) + "\n\nRatio Selected: \t\t\t\t\t\t\t\t\t\t\t{} with Height: {} Pixels, Width: {} Pixels".format(ratio_select, h, w) + "\nRemove Images smaller than: \t\t\t\t{}x{}".format(x_thresh, y_thresh) + "\nCrop Method: \t\t\t\t\t\t\t\t\t\t\t\t{}".format(crop_select) + "\nZoom Ratio: \t\t\t\t\t\t\t\t\t\t\t\t\t{}".format(zoom2face)
         data = [
             ["Folder Location", folder_loc],
-            ["", ""],
             ["Basic Processes", process_select],
             ["Advanced Processes", adv_process_select], 
-            ["", ""],
             ["Image Resize Size", f"Height: {h}, Width: {w}"],
             ["Crop Ratio", ratio_select],
             ["Image Size Threshold", f"Height: {y_thresh}, Width: {x_thresh}"],
             ["Crop Method", crop_select],
-            ["", ""],
             ["Face Zoom-Out Multiplier", zoom2face]
         ]
         
