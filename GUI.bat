@@ -19,6 +19,9 @@ git add *
 git stash
 git pull > nul 2>&1
 
+echo %time% Updating requirements...
+pip install -r requirements.txt > nul 2>&1
+
 echo.
 
 echo %time% Launching GUI...
