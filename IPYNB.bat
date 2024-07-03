@@ -28,6 +28,20 @@ for /l %%i in (1,1,10) do (
 echo %time% Updating requirements...
 pip install -r requirements.txt > nul 2>&1
 
+echo Do you want to re-install remBG with GPU support ? Only do this if you want GPU support and/or have CPU issues when running remBG ( 1 for yes, 0 for no):
+set /p remRedo=
+
+if "%remRedo%"=="1" (
+    echo Updating RemBG with GPU support...
+    echo y | pip uninstall rembg
+    echo y | pip uninstall onnxruntime
+    pip install rembg[gpu] onnxruntime-gpu
+) else if "%remRedo%"=="0" (
+    echo.
+) else (
+    echo Invalid choice.
+)
+
 for /l %%i in (1,1,10) do (
     <nul set /p "=."
     ping localhost -n 2 > nul
