@@ -50,3 +50,7 @@
 
   [ ] Make readme for gradio
     [ ] Shift readme for ipynb to a different folder
+
+  [ ] Disable Options for Suitability Check
+
+  [ ] Make a fix for the CMD closing on crash
