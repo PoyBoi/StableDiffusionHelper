@@ -10,3 +10,5 @@ regex == 2022.10.31
 rembg[gpu]
 # rembg == 2.0.57
 onnxruntime-gpu == 1.18.0
+
+gradio == 4.36.1
