@@ -24,12 +24,30 @@ for /l %%i in (1,1,10) do (
     <nul set /p "=."
     ping localhost -n 2 > nul
 )
+:: Update requirements
+echo %time% Updating requirements...
+pip install -r requirements.txt > nul 2>&1
+
+for /l %%i in (1,1,10) do (
+    <nul set /p "=."
+    ping localhost -n 2 > nul
+)
+
 echo.
 
-call Run_opt.bat
+:: Launch _Helper.ipynb with a specific kernel (e.g., "python3")
+echo %time% Launching .ipynb...
+echo .ipynb launched at http://localhost:8888/notebooks/_Helper.ipynb
+call jupyter notebook _Helper.ipynb --NotebookApp.kernel_name=python3 > nul 2>&1
 
-:: start "" "_Helper.ipynb"
 
-@echo off
 
-:: test test
+:: Deactivate venv
+echo %time% Deactivating venv...
+deactivate
+
+echo %time% Loading complete.
+
+:: Pause to keep the window open
+echo %time% Pausing execution...
+pause
