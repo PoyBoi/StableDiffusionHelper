@@ -1,27 +1,26 @@
 import gradio as gr
 
-from PIL import Image, ImageFile
+from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 import time, datetime
-import cv2
 import torch
 
 from numba import cuda
 
-from scripts.gradio_code import f, ratio_check, get_files, check_files, set2zero, change_tab
+from scripts.gradio_code import f, ratio_check, get_files, set2zero, change_tab
 
 from scripts.caption_list import get_most_common_words
 from scripts.delete_words import process_files
-from scripts.img_processing import convert_images_to_png, remove_black_bars, process_images, select_best_images, detect_faces_and_evaluate, remove_background_from_images, main_call, faceCrop
+from scripts.img_processing import convert_images_to_png, process_images, select_best_images, remove_background_from_images, main_call
 
 # Clearing VRAM
 def clear_vram():
-    torch.cuda.empty_cache()  # Releases all unoccupied cached memory currently held by the caching allocator
+    torch.cuda.empty_cache()
 
     # CUDA (via Numba)
-    cuda.select_device(0)  # Selects the GPU of ID 0 (change according to your setup)
-    cuda.close()  # Closes the device, attempting to free all memory allocated
+    cuda.select_device(0)
+    cuda.close()
 
 # ================================================================================================================================
 # ----- IMAGE -----
@@ -31,7 +30,6 @@ def clear_vram():
 def main_call_g(folder_loc, ratio_select, x_thresh, y_thresh, process_select, adv_process_select, blur_thresh, min_sharp, min_size, min_conf, top_n, h, w, crop_select, zoom2face, face_type, progress = gr.Progress()):
     progress(0, desc="Starting...")
     time.sleep(1)
-    # print(0)
     
     # LOGGING
     log_file = "sdh_log.txt"
@@ -50,21 +48,13 @@ def main_call_g(folder_loc, ratio_select, x_thresh, y_thresh, process_select, ad
     start_time = datetime.datetime.now()
     
     convert_images_to_png(folder_loc)
-    # print(process_select)
     if "Duplicate Check" in process_select:
-        # print(1)
         process_images(folder_path = folder_loc, x = x_thresh, y = y_thresh)
     if "Suitability Check" in process_select:
-        # print(2)
         folder_loc = select_best_images(folder_loc, face_type, float(min_conf), float(min_size), float(min_sharp), float(blur_thresh), int(top_n))
-        # print(folder_loc)
     if "Remove Background" in adv_process_select:
-        # print(3)
-        # print(folder_loc)
         folder_loc = remove_background_from_images(folder_loc, "No_BG")
-        #print(folder_loc)
     if crop_select == "Face Crop[Auto]":
-        # print(4)
         main_call(folder_loc, h, w, zoom2face, ratio_select, face_type)
     elif crop_select == "Face Crop[Manual]":
         return "❤️ All Processing Done ❤️", gr.Button(value="Click to go to Manual Cropping", visible=True)
@@ -95,12 +85,11 @@ def launch_check(folder_loc, process_select, adv_process_select, ratio_select, r
 # Launch Execution
 def launch_confirm(folder_loc, process_select, adv_process_select, ratio_select, ratio_int, thresh, blur_thresh, min_sharp, min_size, min_conf, top_n, crop_select, zoom2face, face_type):
     try:
-        # print("folder_loc", folder_loc)
         h, w = int(ratio_int.split(",")[0]), int(ratio_int.split(",")[1])
         x_thresh, y_thresh = int(thresh.split(",")[0]), int(thresh.split(",")[1])
         zoom2face = int(zoom2face)
 
-        text, button = main_call_g(folder_loc, ratio_select, x_thresh, y_thresh, process_select, adv_process_select, blur_thresh, min_sharp, min_size, min_conf, top_n, h, w, crop_select, zoom2face, face_type)
+        _, button = main_call_g(folder_loc, ratio_select, x_thresh, y_thresh, process_select, adv_process_select, blur_thresh, min_sharp, min_size, min_conf, top_n, h, w, crop_select, zoom2face, face_type)
 
         return "❤️ All Processing Done ❤️" , button, gr.Textbox(visible=False, value=folder_loc)
 
@@ -122,22 +111,17 @@ def process_text_files(folder_loc, words_list, charName):
 
 #__main__
 with gr.Blocks(theme=gr.themes.Default(primary_hue="orange", secondary_hue="orange", neutral_hue="gray")) as UI:
-    # Naming
-    
-    # VRAM BLOCK
     with gr.Row():
         gr.Markdown("# 🚀StableDiffusionHelper🚀 by [PoyBoi](https://github.com/PoyBoi)")
-
         vram_clear_btn = gr.Button("Clear VRAM")
-
         vram_clear_btn.click(
             fn = clear_vram
         )
+
     # ================================================================================================================================
     # IMAGE PROCESSING TAB
     # ================================================================================================================================
     with gr.Tabs() as tabs:
-    # with gr.Tab("Image Processing"):
         with gr.TabItem("Image Processing", id=0):
             with gr.Row():
                 folder_loc = gr.Textbox(label="Image Folder Location", visible=True, interactive=True, placeholder="C:\Downloads")
@@ -149,16 +133,13 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="orange", secondary_hue="oran
 
             with gr.Row():
                 with gr.Column():
-                    # gr.Markdown(value="Select the Image Processes")
                     process_select = gr.CheckboxGroup(choices=["Duplicate Check", "Suitability Check"], label="Select either one, or both")
                     adv_process_select = gr.CheckboxGroup(choices=["Remove Background"], label="Select removal of background from images")
                     top_n = gr.Textbox(label="These are the top n Images selected from your folder", info="Only enter values if you are using Suitabilty Check", value=50)
                 with gr.Column():
-                    # gr.Markdown(value="Select the Advanced Image Processes")
                     face_type = gr.Radio(choices=["Realistic", "Anime-like"], label="Select the face type found in the dataset")                
                     with gr.Row():
                         crop_select = gr.Radio(choices=["Face Crop[Auto]", "Face Crop[Manual]"], label="Choose Cropping Method", info="Selecting Manual Cropping will open a tab")
-                        # zoom_ratio = gr.Textbox( value=2)
                         zoom_ratio = gr.Slider(minimum=1, maximum=10, label="Controls how much the crop should zoom out of the face", info="Values abpve 1 will multiply the crop'ers dimension box", step=1, value=2)
             gr.Markdown("Below are values for 'Crop Image to Face' ")
 
@@ -236,13 +217,13 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="orange", secondary_hue="oran
             with gr.Row():
                 check_btn = gr.Button("Apply Sizes")
                 load_images = gr.UploadButton("Upload Images from Folder", file_count="multiple")
-                check_images = gr.Button("Load Images") #=================
+                check_images = gr.Button("Load Images")
 
             with gr.Row():
                 inputs = gr.ImageEditor(type="filepath", crop_size="1:1")
                 output = gr.Image(type="filepath", label="Output Image", height = 500, width = 500)
             with gr.Row():
-                next_button = gr.Button("Next Image") #===================
+                next_button = gr.Button("Next Image")
             
             count_box = gr.Textbox(value = -1, visible=False)
             old_file = gr.Textbox(value=" ", visible=False)
@@ -260,13 +241,13 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="orange", secondary_hue="oran
             )
             inputs.change(fn = f, outputs=output, inputs=inputs)
 
-            check_images.click( #=================================
+            check_images.click(
                 fn = get_files,
                 inputs = [load_images, file_loc, inputs, count_box, old_file, value_box],
                 outputs = [inputs, count_box, old_file]
             )
 
-            next_button.click( #==================================
+            next_button.click(
                 fn = get_files,
                 inputs = [load_images, file_loc, inputs, count_box, output, value_box],
                 outputs = [inputs, count_box, old_file]
@@ -287,6 +268,3 @@ try:
     UI.launch()
 except Exception as e:
     print("HARD ERROR:", e)
-
-# Things that will carry over to manual cropping after processing:
-# Image crop type, crop dimensions, resize thing
