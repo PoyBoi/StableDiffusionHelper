@@ -21,11 +21,8 @@ git pull > nul 2>&1
 
 echo.
 
-:: Launch _Helper.ipynb with a specific kernel (e.g., "python3")
 echo %time% Launching GUI...
-echo.
-
-:: start "" "_Helper.ipynb"
+call ext_GUI.bat
 
 @echo off
 
