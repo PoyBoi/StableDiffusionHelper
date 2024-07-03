@@ -23,7 +23,7 @@ echo.
 
 :: Launch _Helper.ipynb with a specific kernel (e.g., "python3")
 echo %time% Launching GUI...
-python gradio_GUI.py
+echo.
 
 :: start "" "_Helper.ipynb"
 
