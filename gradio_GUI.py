@@ -145,8 +145,8 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="orange", secondary_hue="oran
             with gr.Row():
                 with gr.Column():
                     process_select = gr.CheckboxGroup(choices=["Duplicate Check", "Suitability Check"], label="Select either one, or both")
-                    adv_process_select = gr.CheckboxGroup(choices=["Remove Background"], label="Select removal of background from images")
                     top_n = gr.Textbox(label="These are the top n Images selected from your folder", info="Only enter values if you are using Suitabilty Check", value=50)
+                    adv_process_select = gr.CheckboxGroup(choices=["Remove Background"], label="Select removal of background from images")
                 with gr.Column():
                     face_type = gr.Radio(choices=["Realistic", "Anime-like"], label="Select the face type found in the dataset")                
                     with gr.Row():
@@ -276,6 +276,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="orange", secondary_hue="oran
 
 try:
     UI.queue()
-    UI.launch()
+    UI.launch(inbrowser=True)
 except Exception as e:
     print("HARD ERROR:", e)
