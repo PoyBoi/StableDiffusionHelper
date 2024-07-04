@@ -40,7 +40,7 @@ Before you begin, ensure you have the following installed:
 - To run the .ipynb file, run `IPYNB.bat`, more info [here](https://github.com/PoyBoi/StableDiffusionHelper/blob/main/README_ipynb.md)
 
 - To update if other methods fail: run the `troubleshoot.bat` file
-  - Before making an issue or a report, please check the [Troubleshooting]()
+  - Before making an issue or a report, please check the [Troubleshooting](https://github.com/PoyBoi/StableDiffusionHelper?tab=readme-ov-file#-troubleshooting)
 
 ## 🧠 Usage
 There are 3 tabs to choose from:
