@@ -49,7 +49,8 @@ def get_files(files_list, folder_loc, im, count, old_file, value_box):
             with Image.open(old_file) as img_old:
                 img_old = img_old.resize((w, h))
                 img_old.save(os.path.join(folder_path_mc, "img_cropped_{}.png".format(file_count)))
-        im["composite"] = os.path.join(current_folder, "images", "static", "Designer.png")
+        # im["composite"] = os.path.join(current_folder, "images", "static", "Designer.png")
+        return gr.ImageEditor(interactive=False), counter, old_file
 
     else:
         filename = files_list[counter]
