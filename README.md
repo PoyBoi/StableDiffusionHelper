@@ -1,4 +1,10 @@
-# 📸 Stable Diffusion Helper - GUI 🎨
+# <div align="center"><b>📸 Stable Diffusion Helper - GUI 🎨</b></div>
+
+</hr>
+
+## <div align="center"> Advanced automated image processing tool for selection, cropping, and standardization</div>
+
+## <div align="center"> 🎉 Now with a GUI 🎉 </div>
 
 ## 🤓 Features
 
@@ -26,7 +32,7 @@ Before you begin, ensure you have the following installed:
   - Download and run the `install.bat` from [releases](https://github.com/PoyBoi/StableDiffusionHelper/releases/tag/v1.0-GUI)
     - Will automatically install dependancies and launch GUI/IPYNB    
 
-### 🔧 Getting Started !
+### 🔧 Let's get things running !!
 
 - To run the GUI, simply run the `GUI.bat` file.
   - The file will prompt you if you want to install remBG with GPU support, follow the on screen instructions for the same
@@ -36,7 +42,7 @@ Before you begin, ensure you have the following installed:
 - To update if other methods fail: run the `troubleshoot.bat` file
   - Before making an issue or a report, please check the [Troubleshooting]()
 
-### 🧠 Usage
+## 🧠 Usage
 There are 3 tabs to choose from:
 
 <p align="center">
