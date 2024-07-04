@@ -131,6 +131,12 @@ There are 3 tabs to choose from:
 3:
 - Next Image: Clicking on this will load the next image (if any), and will save the image you've cropped to `StableDiffusionHelper/Images/Outputs/ManualCrop`
 
+## 😖 Troubleshooting
+
+Sometimes the GUI might crash due to unexpected reasons (has not been patched yet). Each run of this code writes a `sdh_log.txt` file in the root of this project, which contains the error logs. If you encounter an error, please open an issue with the log file attached.
+- Basic Fixes: 
+  - If the GUI crash takes place during "Suitability Check", try removing the file from the folder and proceed, as of now, it's a known issue.
+
 ## ✍️ Contributing
 
 I welcome contributions! If you have a suggestion that would make this better, please fork the repo and/or create a Pull Request/Issue.
