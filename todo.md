@@ -38,7 +38,7 @@
 
   [x] Test out the optimised code
 
-    [ ] Make the code more flexible by making it run the try-except block 1-2 times, if it still fails, then it should just move on or move the image to a different folder
+    [x] Make the code more flexible by making it run the try-except block 1-2 times, if it still fails, then it should just move on or move the image to a different folder
 
   [x] Add a final print the log telling how long it took
 
@@ -48,9 +48,14 @@
 
   [ ] turn this into a pip package
 
-  [ ] Make readme for gradio
-    [ ] Shift readme for ipynb to a different folder
+  [x] Make readme for gradio
+    [x] Shift readme for ipynb to a different folder
 
   [ ] Disable Options for Suitability Check
 
   [ ] Make a fix for the CMD closing on crash
+
+[ ] Add a dropdown for image crop type, make a place to enter custom, ukw, make a height width slider, solves dimensions and crop type
+  - 276, 284, 177
+  [ ] Add a resize to option next to this
+    [ ] Add it to the functions
