@@ -14,6 +14,8 @@ This table lists common image aspect ratios and their corresponding dimensions. 
 | **2:3** | Portrait (Print) | 4x6 inches, 8x12 inches | ... |
 | **13:19** | Super Wide Cinema |  832x1216, 4096x2160 |  SDXL Training  | 
 
+ps: LoRA sizes also can apply to: LoHA, LoCon, LyCORIS, SDXL, etc.
+
 ## Image Sizes for Training Image-Based Models
 
 Image sizes for training can vary depending on the model and dataset complexity. Here are some common sizes:
