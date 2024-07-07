@@ -51,11 +51,15 @@
   [x] Make readme for gradio
     [x] Shift readme for ipynb to a different folder
 
-  [ ] Disable Options for Suitability Check
+  [x] Disable Options for Suitability Check
 
   [ ] Make a fix for the CMD closing on crash
 
-[ ] Add a dropdown for image crop type, make a place to enter custom, ukw, make a height width slider, solves dimensions and crop type
+[x] Add a dropdown for image crop type, make a place to enter custom, ukw, make a height width slider, solves dimensions and crop type
   - 276, 284, 177
-  [ ] Add a resize to option next to this
-    [ ] Add it to the functions
+  [x] Add size calculator for ratio
+  [x] Add a resize to option next to this
+    [x] Add it to the functions
+      [x] Turn squareCrop and rectangleCrop into one function using a resizer variable for height and width instead of of making different functions
+
+[ ] Add a image captioning service
