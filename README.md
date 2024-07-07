@@ -17,6 +17,12 @@
 - **Caption Editing**: Edit captions for images in a batch, allowing you to quickly update or correct captions, with an easy check-box like interface.
 - **Advanced Logging Tools**: Keeps track of images that failed to process, allowing you to easily review and handle exceptions, along with time taken for the total process.
 
+## 🥳 Latest Update (7/7/24)
+- `Image Crop Type` has been replaced with sliders, allowing you to choose any aspect ratio that you want
+- Same applies to `Image Resize` dimensions, which is right beside it
+- Added a drop-down, `Image Size Calculator` for calculating the aspect ratio for any height that you provide (you can use the height box as a width box by inverting the positions of H and W in the crop ratio text box)
+- Added more steps to the `[IMP Control]` slider for more control over the zoom out feature
+
 ## 🏃‍♂️ Getting Started
 
 ### ⚙️ Pre-requisites
