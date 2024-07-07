@@ -67,8 +67,9 @@ There are 3 tabs to choose from:
 - Image Folder Location: Enter the name of the folder containing the images you want to process, this will be where the process creates folders inside of.
 
 2:
-- Image Crop Type: Choose between `Square` or `Rectangle` for the type of crop you want
-- Image Crop Dimensions: Enter the dimensions for the crop, in a `Width, Height` format. For Sqaure, stick to 1:1, and for rectangle, stick to 3:4 or alternatively use `Manual Cropping`
+- ~~Image Crop Type: Choose between `Square` or `Rectangle` for the type of crop you want~~ Deprecated, Replaced with sliders, `AutoCrop Image Height/Width`, choose any free-form aspect ratio that you want
+- ~~Image Crop Dimensions: Enter the dimensions for the crop, in a `Width, Height` format. For Sqaure, stick to 1:1, and for rectangle, stick to 3:4 or alternatively use `Manual Cropping`~~ Deprecated, Replaced with slides, `AutoCrop Images Resize Height/Width`, same as above
+- Above these options, added `Image Size Calculator` for calculating the aspect ratio for any height that you provide (you can use the height box as a width box by inverting the positions of H and W in the crop ratio text box)
 - Image Size Threshold: Removes all images smaller than size `Width, Height`
 
 3:
