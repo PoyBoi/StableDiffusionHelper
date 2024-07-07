@@ -3,7 +3,7 @@ import gradio as gr
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-import time, datetime
+import time, datetime, math
 
 from numba import cuda
 
@@ -26,7 +26,7 @@ def clear_vram():
 # ================================================================================================================================
 
 # __Main__ call
-def main_call_g(folder_loc, ratio_select, x_thresh, y_thresh, process_select, adv_process_select, blur_thresh, min_sharp, min_size, min_conf, top_n, h, w, crop_select, zoom2face, face_type, progress = gr.Progress()):
+def main_call_g(folder_loc, oh, ow, x_thresh, y_thresh, process_select, adv_process_select, blur_thresh, min_sharp, min_size, min_conf, top_n, rh, rw, crop_select, zoom2face, face_type, progress = gr.Progress()):
     progress(0, desc="Starting...")
     time.sleep(1)
     
@@ -54,7 +54,7 @@ def main_call_g(folder_loc, ratio_select, x_thresh, y_thresh, process_select, ad
     if "Remove Background" in adv_process_select:
         folder_loc = remove_background_from_images(folder_loc, "No_BG")
     if crop_select == "Face Crop[Auto]":
-        main_call(folder_loc, h, w, zoom2face, ratio_select, face_type)
+        main_call(folder_loc, rh, rw, zoom2face, oh, ow, face_type)
     elif crop_select == "Face Crop[Manual]":
         return "❤️ All Processing Done ❤️", gr.Button(value="Click to go to Manual Cropping", visible=True)
     
@@ -73,20 +73,20 @@ def main_call_g(folder_loc, ratio_select, x_thresh, y_thresh, process_select, ad
     return "❤️ All Processing Done ❤️", gr.Button(visible=False)
 
 # Confirm Buttons
-def launch_check(folder_loc, process_select, adv_process_select, ratio_select, ratio_int, thresh, zoom2face, crop_select="None"):
+def launch_check(folder_loc, process_select, adv_process_select, resize_select_h, resize_select_w, ratio_select_h, ratio_select_w, thresh, zoom2face, crop_select="None"):
     try:
-        w, h = int(ratio_int.split(",")[0]), int(ratio_int.split(",")[1])
+        h, w = ratio_select_h, ratio_select_w
         x_thresh, y_thresh = int(thresh.split(",")[0]), int(thresh.split(",")[1])
-        # return "Folder Location: \t\t\t\t\t\t\t\t\t\t\t" + folder_loc + "\n\nBasic Processes Selected: \t\t\t\t\t\t" + ', '.join(process_select) + "\n\nAdvanced Proccesses Selected: \t\t\t" + ', '.join(adv_process_select) + "\n\nRatio Selected: \t\t\t\t\t\t\t\t\t\t\t{} with Height: {} Pixels, Width: {} Pixels".format(ratio_select, h, w) + "\nRemove Images smaller than: \t\t\t\t{}x{}".format(x_thresh, y_thresh) + "\nCrop Method: \t\t\t\t\t\t\t\t\t\t\t\t{}".format(crop_select) + "\nZoom Ratio: \t\t\t\t\t\t\t\t\t\t\t\t\t{}".format(zoom2face)
+        ratio_select = [ ratio_select_h // math.gcd(h, w), ratio_select_w // math.gcd(h, w)]
         data = [
             ["Folder Location", folder_loc],
             ["Basic Processes", process_select],
             ["Advanced Processes", adv_process_select], 
-            ["Image Resize Size", f"Height: {h}, Width: {w}"],
+            ["Image Resize Size", f"Height: {resize_select_h}, Width: {resize_select_w}"],
             ["Crop Ratio", ratio_select],
             ["Image Size Threshold", f"Height: {y_thresh}, Width: {x_thresh}"],
             ["Crop Method", crop_select],
-            ["Face Zoom-Out Multiplier", zoom2face]
+            ["Face Zoom-Out Multiplier", zoom2face] 
         ]
         
         return gr.Dataframe(value=data, visible=True)
@@ -94,18 +94,27 @@ def launch_check(folder_loc, process_select, adv_process_select, ratio_select, r
         return "⭕ ERROR ⭕: Cause: \n\n🔧{}🔧".format(e)
 
 # Launch Execution
-def launch_confirm(folder_loc, process_select, adv_process_select, ratio_select, ratio_int, thresh, blur_thresh, min_sharp, min_size, min_conf, top_n, crop_select, zoom2face, face_type):
+def launch_confirm(folder_loc, process_select, adv_process_select, ratio_select_h, ratio_select_w, resize_select_h, resize_select_w, thresh, blur_thresh, min_sharp, min_size, min_conf, top_n, crop_select, zoom2face, face_type):
     try:
-        h, w = int(ratio_int.split(",")[0]), int(ratio_int.split(",")[1])
+        h, w = int(resize_select_h), int(resize_select_w)
         x_thresh, y_thresh = int(thresh.split(",")[0]), int(thresh.split(",")[1])
-        zoom2face = int(zoom2face)
 
-        _, button = main_call_g(folder_loc, ratio_select, x_thresh, y_thresh, process_select, adv_process_select, blur_thresh, min_sharp, min_size, min_conf, top_n, h, w, crop_select, zoom2face, face_type)
+        _, button = main_call_g(folder_loc, int(ratio_select_h), int(ratio_select_w), x_thresh, y_thresh, process_select, adv_process_select, blur_thresh, min_sharp, min_size, min_conf, top_n, h, w, crop_select, zoom2face, face_type)
 
         return "❤️ All Processing Done ❤️" , button, gr.Textbox(visible=False, value=folder_loc)
 
     except Exception as e:
         return "Processing Status: ⭕ ERROR ⭕: Cause: \n\n🔧{}🔧".format(e)
+
+def ratio_calc(h, ratio):
+    h = int(h)
+    r_w, r_h = int(ratio.split(":")[0]), int(ratio.split(":")[1])
+    w = h * r_w / r_h
+    return w
+
+def copyPaste(x):
+    return x
+
 
 # ================================================================================================================================
 # ----- CAPTION -----
@@ -135,12 +144,46 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="orange", secondary_hue="oran
     with gr.Tabs() as tabs:
         with gr.TabItem("Image Processing", id=0):
             with gr.Row():
-                folder_loc = gr.Textbox(label="Image Folder Location", visible=True, interactive=True, placeholder="C:\Downloads")
+                folder_loc = gr.Textbox(label="Image Folder Location", visible=True, interactive=True, placeholder="C:\Downloads\Images")
+
+            with gr.Accordion(label="Image Size Calculator", open=False):
+                with gr.Row():
+                    h = gr.Textbox(label="Height of Image")
+                    ratio = gr.Textbox(label="Crop Ratio [W:H Format ONLY (please)]", info="Ratio in (w:h) format, eg: 9:16 for a vertical rectangle", placeholder="W : H")
+                    w = gr.Textbox(label="Width of Image", interactive=False)
+                    calc = gr.Button("Calculate Relative Width")
+                    
+                    calc.click(
+                        fn = ratio_calc,
+                        inputs=[h, ratio],
+                        outputs=[w]
+                    )
+
+
             
             with gr.Row():
-                ratio_select = gr.Radio(["Square", "Rectangle"], label="Select Image Crop Type", info="Select the ratio between 1:1 or 3:4")
-                ratio_int = gr.Textbox(label= "Image Crop Dimensions", info="Enter the dimensions of the image you want it cropped to, eg: 512,512 [1:1] or 512,683 [3:4] [width, height]", value="512, 512")
-                thresh = gr.Textbox(label= "Image Size Threshold", info="Enter the dimensions of the images which smaller than are moved to a different folder, eg: 700,700 - Removes all images smaller than this size", value="700, 700")
+                with gr.Column():
+                    ratio_select_h = gr.Slider(minimum=0, maximum=2048, value=512, step=1, label="AutoCrop Image Height", info="Select the height of the Image for AutoCrop")
+                    ratio_select_w = gr.Slider(minimum=0, maximum=2048, value=512, step=1, label="AutoCrop Image Width", info="Select the width of the Image for AutoCrop")
+                with gr.Column():
+                    resize_select_h = gr.Slider(minimum=0, maximum=4096, value=512, step=1, label="AutoCrop Image Resize Height", info="Select the Resized Height of the Image for AutoCrop", interactive=True)
+                    resize_select_w = gr.Slider(minimum=0, maximum=4096, value=512, step=1, label="AutoCrop Image Resize Width", info="Select the Resized width of the Image for AutoCrop", interactive=True)
+                    
+                    ratio_select_h.change(
+                        copyPaste,
+                        ratio_select_h,
+                        resize_select_h
+                    )
+
+                    ratio_select_w.change(
+                        copyPaste,
+                        ratio_select_w,
+                        resize_select_w
+                    )
+
+                with gr.Column():
+                    thresh = gr.Textbox(label= "Minimum Image Size Threshold", info="Enter the dimensions of the images which smaller than are moved to a different folder, eg: 700,700 - Removes all images smaller than this size", value="700, 700")
+                    gr.Markdown("### For more help with choosing sizes, [refer this guide.](https://github.com/PoyBoi/StableDiffusionHelper/blob/main/misc/imageSizesHelp.md)")
 
             with gr.Row():
                 with gr.Column():
@@ -148,10 +191,10 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="orange", secondary_hue="oran
                     top_n = gr.Textbox(label="These are the top n Images selected from your folder", info="Only enter values if you are using Suitabilty Check", value=50)
                     adv_process_select = gr.CheckboxGroup(choices=["Remove Background"], label="Select removal of background from images")
                 with gr.Column():
-                    face_type = gr.Radio(choices=["Realistic", "Anime-like"], label="Select the face type found in the dataset")                
+                    face_type = gr.Radio(choices=["Realistic", "Animisitic (Anime)"], label="Select the face type found in the dataset")                
                     with gr.Row():
                         crop_select = gr.Radio(choices=["Face Crop[Auto]", "Face Crop[Manual]"], label="Choose Cropping Method", info="Selecting Manual Cropping will open a tab")
-                        zoom_ratio = gr.Slider(minimum=1, maximum=10, label="Controls how much the crop should zoom out of the face", info="Values abpve 1 will multiply the crop'ers dimension box", step=1, value=2)
+                        zoom_ratio = gr.Slider(minimum=1, maximum=10, label="Controls how much the crop should zoom out of the face", info="Values abpve 1 will multiply the crop'ers dimension box", step=0.1, value=2)
             gr.Markdown("Below are values for 'Crop Image to Face' ")
 
             with gr.Row():
@@ -171,14 +214,14 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="orange", secondary_hue="oran
 
             check_btn.click(
                 fn=launch_check, 
-                inputs=[folder_loc, process_select, adv_process_select, ratio_select, ratio_int, thresh, zoom_ratio, crop_select], 
+                inputs=[folder_loc, process_select, adv_process_select, resize_select_h, resize_select_w, ratio_select_h, ratio_select_w, thresh, zoom_ratio, crop_select], 
                 outputs=[outputs_check]
             )
 
             # Final check was here
             final_check.click(
                 fn = launch_confirm,
-                inputs = [folder_loc, process_select, adv_process_select, ratio_select, ratio_int, thresh, blur_thresh, min_sharp, min_size, min_conf, top_n, crop_select, zoom_ratio, face_type], 
+                inputs = [folder_loc, process_select, adv_process_select, ratio_select_h, ratio_select_w, resize_select_h, resize_select_w, thresh, blur_thresh, min_sharp, min_size, min_conf, top_n, crop_select, zoom_ratio, face_type], 
                 outputs = [final_output, btn_mc, file_loc]
             )
 
@@ -186,10 +229,9 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="orange", secondary_hue="oran
         # CAPTION PROCESSING TAB
         # ================================================================================================================================
 
-        # with gr.Accordion("Caption Processing Tab", open=False):
         with gr.TabItem("Caption Processing", id=1):
 
-            #Enter Folder Location
+            # Enter Folder Location
             with gr.Row():
                 folder_loc = gr.Textbox(label="Caption Folder Location")
 
@@ -270,7 +312,8 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="orange", secondary_hue="oran
             
             btn_mc.click(
                 change_tab, 
-                [gr.Number(2, visible=False), file_loc, ratio_select, ratio_int], 
+                [gr.Number(2, visible=False), file_loc, ratio_select_h, ratio_select_w], 
+                # [gr.Number(2, visible=False), file_loc, ratio_select_h, ratio_select_w, ratio_int], 
                 [tabs, check_box, value_box, load_images]
             )
 
