@@ -12,11 +12,9 @@ import dlib
 
 from tqdm import tqdm
 
-import io
-import time
+import io, time, math
 import gradio as gr
 from shutil import move
-import io
 from IPython.display import clear_output
 
 from tqdm import tqdm
@@ -546,7 +544,9 @@ def faceCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=512, y=51
         # print("6.0 done")
         return cropped_rgb
 
-def main_call(folder_path, x=512, y=512, imp = 1, ratio_select = "Square", face_type = "Realistic", progress = gr.Progress()):
+# def main_call(folder_path, x=512, y=512, imp = 1, ratio_select = "Square", face_type = "Realistic", progress = gr.Progress()):
+def main_call(folder_path, x=512, y=512, imp = 1, oh=512, ow=512, face_type = "Realistic", progress = gr.Progress()):
+    # x, y -> resize int's, oh,ow -> resize box size
     
     failed_img = []
     face_failed = []
@@ -605,13 +605,14 @@ def main_call(folder_path, x=512, y=512, imp = 1, ratio_select = "Square", face_
                         f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Process Name: Automatic Cropping\n")
                         f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')}, Current File: {i}\n") 
                     
-                    if ratio_select == "Square":
-                        # print("Square Selected")
-                        # print("Going in")
-                        faceCrop(resized_folder_path, failed_img, face_failed, i, img, imp, x, y, face_type, face_detector)
-                    elif ratio_select == "Rectangle":
-                        # print("Rectangle Selected")
-                        rectangularCrop(resized_folder_path, failed_img, face_failed, i, img, imp, x, y, face_type, face_detector)
+                    # if ratio_select == "Square":
+                    #     # print("Square Selected")
+                    #     # print("Going in")
+                    #     faceCrop(resized_folder_path, failed_img, face_failed, i, img, imp, x, y, face_type, face_detector)
+                    # elif ratio_select == "Rectangle":
+                    #     # print("Rectangle Selected")
+                    #     rectangularCrop(resized_folder_path, failed_img, face_failed, i, img, imp, x, y, face_type, face_detector)
+                    cropFace(resized_folder_path, failed_img, face_failed, i, img, imp, oh, ow, x, y, face_type, face_detector)
 
             elif os.path.isdir(file_loc):
                 print(i, ": Is a folder")
@@ -729,4 +730,108 @@ def rectangularCrop(folder_dir, failed_img, face_failed, fName, img, imp=1, x=51
         # Save the image in RGB format
         cv2.imwrite(os.path.join(folder_dir, fName + '_rectangular.png'), cropped_resized)
 
+        return cropped_rgb
+
+def cropFace(folder_dir, failed_img, face_failed, fName, img, imp=1, oh_x=512, ow_x=512, x=512, y=512, face_type = "Realistic", face_detector = "None"):
+    
+    # current_folder = os.getcwd()
+    # modelFile = os.path.join(current_folder, "models", "detector_face.svm")
+
+    # face_detector = dlib.simple_object_detector(modelFile)
+    detector = dlib.get_frontal_face_detector()
+
+    _, ext = os.path.splitext(fName)
+
+    # print(os.path.join(folder_dir, fNameOg))
+
+    fName = fName.split(".")[0]
+
+    if ext.lower() not in ['.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.webp']:
+        print(f"Unsupported image format: {ext}")
+        failed_img.append(fName)
+        return
+
+    if face_type == "Realistic":
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        oh, ow = len(gray), len(gray[0])
+        faces = detector(gray)
+
+    else:
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        oh, ow = len(gray), len(gray[0])
+        faces = face_detector(img)
+        
+
+    if len(faces) == 0:
+        face_failed.append(fName)
+    else:
+        # print("1.0 in")
+        if face_type == "Realistic":
+            areas = [face.width() * face.height() for face in faces]
+            max_area_index = np.argmax(areas)
+            fx, fy, fw, fh = faces[max_area_index].left(), faces[max_area_index].top(), faces[max_area_index].width(), faces[max_area_index].height()
+            # print(f"1.5 in {fx, fy, fw, fh}")
+        else:
+            ae = detect_anime(img, 0.7, 0.009, 100, 100, "crop", face_detector)
+            fx, fy, fw, fh = ae[0], ae[1], ae[2], ae[3]
+
+        # print("2.0 in")
+        fx, fy, fw, fh = max(0, fx), max(0, fy), max(0, fw), max(0, fh)
+        # Calculate desired dimensions for rectangular crop (3:4 aspect ratio)
+        
+        # making the ratios from the numbers we get
+        rh, rw = oh_x // math.gcd(oh_x, ow_x), ow_x // math.gcd(oh_x, ow_x)
+        # If this does not work, use the GCD method mentioned above
+        h = fh
+        w = int(h * rw / rh)
+
+        # calculating the centre of the face
+        cx, _ = fx + fw//2, fy + fh//2
+
+        # print(0, ow, oh)
+        # print(1, fx, fy, "\nfw, fh: ", fw, fh, "\nh,w ", h, w, "\nimp: ", imp)
+
+        # Apply zoom out factor
+        w = int(w * imp)
+        h = int(h * imp)
+        # print(2, w, h)
+
+        # print(2.2, "{}/2, {}+{}/2".format(fx, oh, fy))
+        fx, fy = fx//imp, fy//imp
+        # print(2.5, fx, fy)
+
+        mid_x = (cx-fx)*2
+        mid_y = (rh*mid_x)//rw
+        # print(3, mid_x, mid_y)
+
+        if fy+mid_y > oh:
+            # print(1, "{} + {} > {}".format(fy, mid_y, oh))
+            mid_y = oh-fy
+            mid_x = (rw*mid_y)//rh
+            # print(1.5, mid_x, mid_y)
+        if fx+mid_x > ow:
+            # print(2, "{} + {} > {}".format(fx, mid_x, ow))
+            mid_x = ow-fx
+            mid_y = (rh*mid_x)//rw
+            # print(2.5, mid_x, mid_y)
+
+        # print("3.0 in")
+        # Crop the rectangular region
+        fy, mid_y, fx, mid_x = int(fy), int(mid_y), int(fx), int(mid_x)
+        cropped = img[fy:fy+mid_y, fx:fx+mid_x]
+
+        # cropped = cv2.rectangle(img, (fx, fy), (fx+fw, fy+fh), (0, 255, 0), 2)
+
+        # Convert BGR to RGB
+        # print(f"4.0 in \n{cropped}")
+        cropped_rgb = cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB)
+
+        # Resize the cropped image to the specified dimensions
+        # print(f"5.0 final {cropped_rgb}")
+        cropped_resized = cv2.resize(cropped, (y, x))
+
+        # Save the image in RGB format
+        cv2.imwrite(os.path.join(folder_dir, fName + '_rectangular.png'), cropped_resized)
+
+        # print("6.0 done")
         return cropped_rgb
