@@ -194,7 +194,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="orange", secondary_hue="oran
                     face_type = gr.Radio(choices=["Realistic", "Animisitic (Anime)"], label="Select the face type found in the dataset")                
                     with gr.Row():
                         crop_select = gr.Radio(choices=["Face Crop[Auto]", "Face Crop[Manual]"], label="Choose Cropping Method", info="Selecting Manual Cropping will open a tab")
-                        zoom_ratio = gr.Slider(minimum=1, maximum=10, label="[IMP Controller]\nControls how much the crop should zoom out of the face", info="Values abpve 1 will multiply the crop'ers dimension box", step=0.1, value=2)
+                        zoom_ratio = gr.Slider(minimum=1, maximum=10, label="[IMP Controller] Controls how much the crop should zoom out of the face", info="Values abpve 1 will multiply the crop'ers dimension box", step=0.1, value=2)
             gr.Markdown("Below are values for 'Crop Image to Face' ")
 
             with gr.Row():
