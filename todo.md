@@ -63,3 +63,5 @@
       [x] Turn squareCrop and rectangleCrop into one function using a resizer variable for height and width instead of of making different functions
 
 [ ] Add a image captioning service
+
+[ ] Add VectorDB for easier retrteival of hash's of images stored
