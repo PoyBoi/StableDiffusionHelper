@@ -65,3 +65,5 @@
 [ ] Add a image captioning service
 
 [ ] Add VectorDB for easier retrteival of hash's of images stored
+
+[ ] Add a try/except for files that were not able to be processed, o/p to CLI
