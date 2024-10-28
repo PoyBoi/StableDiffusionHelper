@@ -12,3 +12,6 @@ rembg[gpu]
 onnxruntime-gpu == 1.18.0
 
 gradio == 4.36.1
+pydantic == 2.8.0
+fastapi == 0.111.0
+starlette == 0.37.2
