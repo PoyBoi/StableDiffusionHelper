@@ -156,6 +156,14 @@ I welcome contributions! If you have a suggestion that would make this better, p
 
 Don't forget to give the project a star! ⭐
 
+## [⭐](https://star-history.com/)Star History
+
+<div align="center">
+  <a href="https://star-history.com/#PoyBoi/StableDiffusionHelper&Date">
+    <img src="https://api.star-history.com/svg?repos=PoyBoi/StableDiffusionHelper&type=Date" alt="Star History Chart">
+  </a>
+</div>
+
 ## 📝 License
 
 Distributed under the GPL-3.0 License. See `LICENSE` for more information.
