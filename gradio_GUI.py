@@ -77,7 +77,7 @@ def launch_check(folder_loc, process_select, adv_process_select, resize_select_h
     try:
         h, w = ratio_select_h, ratio_select_w
         x_thresh, y_thresh = int(thresh.split(",")[0]), int(thresh.split(",")[1])
-        ratio_select = [ ratio_select_h // math.gcd(h, w), ratio_select_w // math.gcd(h, w)]
+        ratio_select = [ratio_select_h // math.gcd(h, w), ratio_select_w // math.gcd(h, w)]
         data = [
             ["Folder Location", folder_loc],
             ["Basic Processes", process_select],
@@ -89,9 +89,9 @@ def launch_check(folder_loc, process_select, adv_process_select, resize_select_h
             ["Face Zoom-Out Multiplier", zoom2face] 
         ]
         
-        return gr.Dataframe(value=data, visible=True)
+        return outputs_check.update(value=data, visible=True)
     except Exception as e:
-        return "⭕ ERROR ⭕: Cause: \n\n🔧{}🔧".format(e)
+        return outputs_check.update(value=[["Error", f"⭕ ERROR: {e}⭕"]], visible=True)
 
 # Launch Execution
 def launch_confirm(folder_loc, process_select, adv_process_select, ratio_select_h, ratio_select_w, resize_select_h, resize_select_w, thresh, blur_thresh, min_sharp, min_size, min_conf, top_n, crop_select, zoom2face, face_type):
