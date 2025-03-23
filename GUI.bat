@@ -29,7 +29,7 @@ if "%remRedo%"=="1" (
     echo Updating RemBG with GPU support...
     echo y | pip uninstall rembg
     echo y | pip uninstall onnxruntime
-    pip install rembg[gpu] onnxruntime-gpu
+    pip install rembg[gpu]==2.0.57 onnxruntime-gpu==1.18.0
 ) else if "%remRedo%"=="0" (
     echo.
 ) else (
