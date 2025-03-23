@@ -23,7 +23,6 @@
 ## 🥳 Latest Update (23/03/25)
 - Fixed installation edge-cases for version control of GPU re-installation of `remBG` and `onnxruntime-gpu`
 - Fixed version control for `gradio`, `starlette`, `fastapi` and others in the `requirements.txt` file
-- Fixed deprecation errors for gradio (still testing)
 
 ## 🏃‍♂️ Getting Started
 
@@ -148,9 +147,15 @@ There are 3 tabs to choose from:
 
 ## 😖 Troubleshooting
 
-Sometimes the GUI might crash due to unexpected reasons (has not been patched yet). Each run of this code writes a `sdh_log.txt` file in the root of this project, which contains the error logs. If you encounter an error, please open an issue with the log file attached.
-- Basic Fixes: 
-  - If the GUI crash takes place during "Suitability Check", try removing the file from the folder and proceed, as of now, it's a known issue.
+- ### For Severe GUI Errors/Crashes
+
+  Sometimes the GUI might crash due to unexpected reasons (has not been patched yet). Each run of this code writes a `sdh_log.txt` file in the root of this project, which contains the error logs. If you encounter an error, please open an issue with the log file attached.
+  - Basic Fixes: 
+    - If the GUI crash takes place during "Suitability Check", try removing the file from the folder and proceed, as of now, it's a known issue.
+
+- ### Command Line Error: ```UserWarning: `crop_size` parameter is deprecated. Please use `canvas_size` instead.```
+
+  Do not worry, ignore this issue, it will not render anything useless
 
 ## ✍️ Contributing
 
