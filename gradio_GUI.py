@@ -273,7 +273,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="orange", secondary_hue="oran
                 check_images = gr.Button("Load Images")
 
             with gr.Row():
-                inputs = gr.ImageEditor(type="filepath", canvas_size="1:1")
+                inputs = gr.ImageEditor(type="filepath", crop_size="1:1")
                 output = gr.Image(type="filepath", label="Output Image", height = 500, width = 500)
                 
             with gr.Row():
