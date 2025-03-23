@@ -81,17 +81,16 @@ def launch_check(folder_loc, process_select, adv_process_select, resize_select_h
         data = [
             ["Folder Location", folder_loc],
             ["Basic Processes", process_select],
-            ["Advanced Processes", adv_process_select], 
+            ["Advanced Processes", adv_process_select],
             ["Image Resize Size", f"Height: {resize_select_h}, Width: {resize_select_w}"],
             ["Crop Ratio", ratio_select],
             ["Image Size Threshold", f"Height: {y_thresh}, Width: {x_thresh}"],
             ["Crop Method", crop_select],
-            ["Face Zoom-Out Multiplier", zoom2face] 
+            ["Face Zoom-Out Multiplier", zoom2face]
         ]
-        
-        return outputs_check.update(value=data, visible=True)
+        return data
     except Exception as e:
-        return outputs_check.update(value=[["Error", f"⭕ ERROR: {e}⭕"]], visible=True)
+        return [["Error", f"⭕ ERROR: {e}⭕"]]
 
 # Launch Execution
 def launch_confirm(folder_loc, process_select, adv_process_select, ratio_select_h, ratio_select_w, resize_select_h, resize_select_w, thresh, blur_thresh, min_sharp, min_size, min_conf, top_n, crop_select, zoom2face, face_type):
@@ -205,7 +204,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="orange", secondary_hue="oran
 
 
             check_btn = gr.Button("Check Choices")
-            outputs_check = gr.Dataframe(label="Selected Value", headers=["Choice", "Value"], interactive=False, visible=False)
+            outputs_check = gr.Dataframe(label="Selected Value", headers=["Choice", "Value"], interactive=False, visible=True)
 
             final_check = gr.Button("Start processing")
             btn_mc = gr.Button(visible=False)
