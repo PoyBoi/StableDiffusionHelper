@@ -1,17 +1,21 @@
-jupyter
-opencv-python == 4.10.0.82
+jupyter==1.0.0
+opencv-python==4.10.0.84
 imagehash == 4.3.1
-Pillow == 9.3.0
-tqdm == 4.65.2
-pandas == 1.5.1
+Pillow==10.2.0
+tqdm==4.66.6
+pandas==2.2.3
 numpy == 1.26.4
 dlib == 19.24.4
-regex == 2022.10.31
-rembg[gpu]
-# rembg == 2.0.57
+regex==2024.9.11
+rembg[gpu]==2.0.57
+rembg == 2.0.57
 onnxruntime-gpu == 1.18.0
 
-gradio == 4.36.1
-pydantic == 2.8.0
-fastapi == 0.111.0
-starlette == 0.37.2
+gradio==5.22.0
+gradio-client==1.8.0
+groovy==0.1.2
+huggingface-hub==0.29.3
+pydantic==2.9.2
+fastapi==0.115.11
+starlette==0.46.1
+ruff==0.11.2
